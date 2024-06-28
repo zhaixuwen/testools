@@ -12,5 +12,6 @@ import HomePage from '@/components/HomePage.vue'
 body {
   margin: 0;
   padding: 0;
+  background-color: #F4F4F4;
 }
 </style>
