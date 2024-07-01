@@ -6,11 +6,11 @@ const smallUUID = ref(crypto.randomUUID())
 const bigUUID = ref(smallUUID.value.toUpperCase())
 
 const generateUUID = () => {
-  smallUUID.value = crypto.randomUUID();
+  smallUUID.value = crypto.randomUUID()
   navigator.clipboard.writeText(smallUUID.value).then(() => {
     ElMessage({
       message: 'UUID has been copied to clipboard.',
-      type: 'success',
+      type: 'success'
     })
   })
 }
@@ -23,31 +23,42 @@ watch(smallUUID, (newVal, oldVal) => {
 </script>
 
 <template>
-  <el-card shadow="hover">
-    <template #header>
-      <div class="uuid-header">
-        <span>UUID(v4) Generator</span>
-      </div>
-    </template>
-    <div class="uuid-content">
-      <el-input class="uuid-input" v-model="smallUUID" placeholder="Click button to generate" />
-      <el-button class="uuid-btn" type="primary" @click="generateUUID()" color="#FFB243">Generate</el-button>
-    </div>
-    <div class="uuid-content uuid-big">
-      <el-input class="uuid-input" v-model="bigUUID" placeholder="Click button to generate" />
-      <el-button v-if="false" class="uuid-btn" type="primary" color="#FFB243">Generate</el-button>
-    </div>
-  </el-card>
+  <div>
+    <el-card shadow="hover">
+      <template #header>
+        <div class="uuid-header">
+          <span>UUID(v4) Generator</span>
+        </div>
+      </template>
+      <table>
+        <tr>
+          <td>
+            <el-input v-model="smallUUID" placeholder="Click button to generate" />
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <el-input v-model="bigUUID" placeholder="Click button to generate" />
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="btn-div">
+              <el-button type="primary" @click="generateUUID()" color="#FFB243">Generate</el-button>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </el-card>
+  </div>
 </template>
 
 <style scoped>
-.uuid-content {
-  display: grid;
-  grid-template-columns: 3fr 1fr;
-  grid-gap: 5px;
+table {
+  width: 100%;
 }
 
-.uuid-big {
-  margin-top: 5px;
+.btn-div {
+  float: right;
 }
 </style>

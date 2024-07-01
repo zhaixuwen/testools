@@ -1,5 +1,6 @@
 <script setup>
 import UUIDCard from '@/components/UUIDCard.vue'
+import TimestampCard from '@/components/TimestampCard.vue'
 
 </script>
 
@@ -21,7 +22,7 @@ import UUIDCard from '@/components/UUIDCard.vue'
             <UUIDCard />
           </el-col>
           <el-col :span="8">
-            <div class="grid-content ep-bg-purple" />
+            <TimestampCard />
           </el-col>
           <el-col :span="8">
             <div class="grid-content ep-bg-purple" />
