@@ -2,6 +2,7 @@
 import UUIDCard from '@/components/UUIDCard.vue'
 import TimestampCard from '@/components/TimestampCard.vue'
 import UserInfoCard from '@/components/UserInfoCard.vue'
+import JsonFormatCard from '@/components/JsonFormatCard.vue'
 
 </script>
 
@@ -19,14 +20,15 @@ import UserInfoCard from '@/components/UserInfoCard.vue'
       </el-header>
       <el-main class="home-main">
         <el-row :gutter="20">
-          <el-col :span="8">
-            <UUIDCard />
+          <el-col :span="7">
+            <div class="card"><UUIDCard /></div>
+            <div class="card"><UserInfoCard /></div>
           </el-col>
-          <el-col :span="8">
-            <TimestampCard />
+          <el-col :span="7">
+            <div class="card"><TimestampCard /></div>
           </el-col>
-          <el-col :span="8">
-            <UserInfoCard />
+          <el-col :span="10">
+            <div class="card"><JsonFormatCard /></div>
           </el-col>
         </el-row>
       </el-main>
@@ -39,5 +41,7 @@ import UserInfoCard from '@/components/UserInfoCard.vue'
   margin: 0;
   padding: 0;
 }
-
+.card {
+  margin-bottom: 10px;
+}
 </style>

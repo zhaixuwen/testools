@@ -35,7 +35,7 @@ onMounted(() => {
         <tr>
           <td>
             <div class="btn-div">
-              <el-button type="primary" @click="generateUUID()" color="#FFB243">Generate</el-button>
+              <el-button color="#FDC93A" @click="generateUUID()">Generate</el-button>
             </div>
           </td>
         </tr>

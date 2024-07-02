@@ -90,7 +90,7 @@ onMounted(() => {
           <td></td>
           <td>
             <div class="btn-area">
-              <el-button color="#FFB243" type="primary" @click="refreshInfo()">Generate</el-button>
+              <el-button color="#FDC93A" @click="refreshInfo()">Generate</el-button>
             </div>
           </td>
         </tr>

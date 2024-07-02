@@ -88,9 +88,9 @@ watch(nowTimestamp, (newVal, oldVal) => {
                 class="box-item"
                 effect="dark"
                 content="Convert Datetime to Timestamp"
-                placement="bottom"
+                placement="left"
               >
-                <el-button color="#FFB243" type="primary" @click="convertDatetime()">Convert</el-button>
+                <el-button color="#FDC93A" @click="convertDatetime()">Convert</el-button>
               </el-tooltip>
             </div>
           </td>
