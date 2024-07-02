@@ -1,24 +1,15 @@
 <script setup>
-import { ref, watch } from 'vue'
-import { ElMessage } from 'element-plus'
+import { computed, onMounted, ref } from 'vue'
 
-const smallUUID = ref(crypto.randomUUID())
-const bigUUID = ref(smallUUID.value.toUpperCase())
+const smallUUID = ref('')
+const bigUUID = computed(() => smallUUID.value.toUpperCase())
 
 const generateUUID = () => {
   smallUUID.value = crypto.randomUUID()
-  navigator.clipboard.writeText(smallUUID.value).then(() => {
-    ElMessage({
-      message: 'UUID has been copied to clipboard.',
-      type: 'success'
-    })
-  })
 }
 
-watch(smallUUID, (newVal, oldVal) => {
-  if (newVal !== oldVal) {
-    bigUUID.value = newVal.toUpperCase()
-  }
+onMounted(() => {
+  generateUUID()
 })
 </script>
 
