@@ -3,6 +3,7 @@ import UUIDCard from '@/components/UUIDCard.vue'
 import TimestampCard from '@/components/TimestampCard.vue'
 import UserInfoCard from '@/components/UserInfoCard.vue'
 import JsonFormatCard from '@/components/JsonFormatCard.vue'
+import JsonCompareCard from '@/components/JsonCompareCard.vue'
 
 </script>
 
@@ -29,6 +30,7 @@ import JsonFormatCard from '@/components/JsonFormatCard.vue'
           </el-col>
           <el-col :span="10">
             <div class="card"><JsonFormatCard /></div>
+            <div class="card"><JsonCompareCard /></div>
           </el-col>
         </el-row>
       </el-main>
