@@ -51,5 +51,6 @@ table {
 
 .btn-div {
   float: right;
+  margin-top: 5px;
 }
 </style>

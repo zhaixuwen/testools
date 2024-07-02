@@ -27,10 +27,10 @@ import JsonCompareCard from '@/components/JsonCompareCard.vue'
           </el-col>
           <el-col :span="7">
             <div class="card"><TimestampCard /></div>
+            <div class="card"><JsonCompareCard /></div>
           </el-col>
           <el-col :span="10">
             <div class="card"><JsonFormatCard /></div>
-            <div class="card"><JsonCompareCard /></div>
           </el-col>
         </el-row>
       </el-main>

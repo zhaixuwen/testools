@@ -49,7 +49,7 @@ const clearJsonData = () => {
 
 <style scoped>
 .btn-list {
-  margin-top: 3px;
+  margin-top: 10px;
   margin-bottom: 20px;
   float: right;
 }

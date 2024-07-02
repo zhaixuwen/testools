@@ -107,6 +107,7 @@ table {
 
 .btn-area {
   float: right;
+  margin-top: 5px;
 }
 
 </style>

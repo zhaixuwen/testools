@@ -107,5 +107,6 @@ table {
 
 .time-btn {
   float: right;
+  margin-top: 5px;
 }
 </style>
