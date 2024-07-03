@@ -36,7 +36,7 @@ const rightJson = ref('{}')
     <el-dialog
       v-model="dialogVisible"
       title="Compare JSON"
-      width="66.6%"
+      width="70%"
       :before-close="handleClose"
     >
       <div class="input-area">
