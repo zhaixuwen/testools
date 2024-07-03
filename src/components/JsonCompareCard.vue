@@ -13,8 +13,8 @@ const formatJson = (data) => {
 const handleClose = () => {
   dialogVisible.value = false
   codeDiffVisible.value = false
-  leftJson.value = '{}'
-  rightJson.value = '{}'
+  // leftJson.value = '{}'
+  // rightJson.value = '{}'
 }
 
 const leftJson = ref('{}')
@@ -36,8 +36,7 @@ const rightJson = ref('{}')
     <el-dialog
       v-model="dialogVisible"
       title="Compare JSON"
-      width="800"
-      fullscreen
+      width="66.6%"
       :before-close="handleClose"
     >
       <div class="input-area">

@@ -4,6 +4,7 @@ import TimestampCard from '@/components/TimestampCard.vue'
 import UserInfoCard from '@/components/UserInfoCard.vue'
 import JsonFormatCard from '@/components/JsonFormatCard.vue'
 import JsonCompareCard from '@/components/JsonCompareCard.vue'
+import APIMockCard from '@/components/APIMockCard.vue'
 
 </script>
 
@@ -28,6 +29,7 @@ import JsonCompareCard from '@/components/JsonCompareCard.vue'
           <el-col :span="7">
             <div class="card"><TimestampCard /></div>
             <div class="card"><JsonCompareCard /></div>
+            <div class="card"><APIMockCard /></div>
           </el-col>
           <el-col :span="10">
             <div class="card"><JsonFormatCard /></div>
