@@ -26,7 +26,7 @@ const rightJson = ref('{}')
     <el-card shadow="hover">
       <template #header>
         <div class="time-header">
-          <span>JSON Compare</span>
+          <span>JSON Comparer</span>
         </div>
       </template>
       <div class="btn-area">

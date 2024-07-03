@@ -33,7 +33,7 @@ const clearJsonData = () => {
     <el-card shadow="hover">
       <template #header>
         <div class="uuid-header">
-          <span>JSON Format</span>
+          <span>JSON Formatter</span>
         </div>
       </template>
       <el-input v-model="jsonData" type="textarea" :autosize="{ minRows: 10, maxRows: 15 }"></el-input>
