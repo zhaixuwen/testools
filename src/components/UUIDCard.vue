@@ -21,36 +21,24 @@ onMounted(() => {
           <span>UUID(v4) Generator</span>
         </div>
       </template>
-      <table>
-        <tr>
-          <td>
-            <el-input v-model="smallUUID" placeholder="Click button to generate" />
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <el-input v-model="bigUUID" placeholder="Click button to generate" />
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <div class="btn-div">
-              <el-button color="#FDC93A" @click="generateUUID()">Generate</el-button>
-            </div>
-          </td>
-        </tr>
-      </table>
+      <el-form
+        :label-position="'right'"
+        label-width="auto"
+      >
+        <el-form-item label="">
+          <el-input v-model="smallUUID" placeholder="Click button to generate" />
+        </el-form-item>
+        <el-form-item label="">
+          <el-input v-model="bigUUID" placeholder="Click button to generate" />
+        </el-form-item>
+        <el-form-item style="float: right">
+          <el-button color="#FDC93A" @click="generateUUID()">Generate</el-button>
+        </el-form-item>
+      </el-form>
     </el-card>
   </div>
 </template>
 
 <style scoped>
-table {
-  width: 100%;
-}
 
-.btn-div {
-  float: right;
-  margin-top: 5px;
-}
 </style>

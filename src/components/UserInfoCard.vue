@@ -55,59 +55,34 @@ onMounted(() => {
           <span>User Info Generator</span>
         </div>
       </template>
-      <table>
-        <tr>
-          <td>Name(Simplified Chinese)</td>
-          <td>
-            <el-input v-model="username"></el-input>
-          </td>
-        </tr>
-        <tr>
-          <td>Birthday</td>
-          <td>
-            <el-input v-model="birthday"></el-input>
-          </td>
-        </tr>
-        <tr>
-          <td>Phone number</td>
-          <td>
-            <el-input v-model="phoneNumber"></el-input>
-          </td>
-        </tr>
-        <tr>
-          <td>ID Card number</td>
-          <td>
-            <el-input v-model="idCardNumber"></el-input>
-          </td>
-        </tr>
-        <tr>
-          <td>Bank Card number</td>
-          <td>
-            <el-input v-model="bankCardNumber"></el-input>
-          </td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>
-            <div class="btn-area">
-              <el-button color="#FDC93A" @click="refreshInfo()">Generate</el-button>
-            </div>
-          </td>
-        </tr>
-      </table>
+      <el-form
+        :label-position="'right'"
+        label-width="auto"
+      >
+        <el-form-item label="Name(Simplified Chinese)">
+          <el-input v-model="username" />
+        </el-form-item>
+        <el-form-item label="Birthday">
+          <el-input v-model="birthday" />
+        </el-form-item>
+        <el-form-item label="Phone number">
+          <el-input v-model="phoneNumber" />
+        </el-form-item>
+        <el-form-item label="ID Card number">
+          <el-input v-model="idCardNumber" />
+        </el-form-item>
+        <el-form-item label="Bank Card number">
+          <el-input v-model="bankCardNumber" />
+        </el-form-item>
+        <el-form-item style="float: right;">
+          <el-button color="#FDC93A" @click="refreshInfo()">Generate</el-button>
+        </el-form-item>
+      </el-form>
     </el-card>
   </div>
 
 </template>
 
 <style scoped>
-table {
-  width: 100%;
-}
-
-.btn-area {
-  float: right;
-  margin-top: 5px;
-}
 
 </style>

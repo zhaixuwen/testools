@@ -48,6 +48,12 @@ const convertTimestamp = () => {
   nowDate.value = formatDate(newDate)
 }
 
+const reset = () => {
+  const now = new Date()
+  nowTimestamp.value = now.valueOf()
+  nowDate.value = formatDate(now)
+}
+
 watch(nowTimestamp, (newVal, oldVal) => {
   if (newVal !== oldVal) {
     convertTimestamp()
@@ -63,50 +69,36 @@ watch(nowTimestamp, (newVal, oldVal) => {
           <span>Timestamp Conversion</span>
         </div>
       </template>
-      <table>
-        <tr>
-          <td>Timestamp</td>
-          <td>
-            <el-input v-model="nowTimestamp">
-              <template #append>ms</template>
-            </el-input>
-          </td>
-        </tr>
-        <tr>
-          <td>Datetime</td>
-          <td>
-            <el-input v-model="nowDate">
-              <template #append>utc</template>
-            </el-input>
-          </td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>
-            <div class="time-btn">
-              <el-tooltip
-                class="box-item"
-                effect="dark"
-                content="Convert Datetime to Timestamp"
-                placement="left"
-              >
-                <el-button color="#FDC93A" @click="convertDatetime()">Convert</el-button>
-              </el-tooltip>
-            </div>
-          </td>
-        </tr>
-      </table>
+      <el-form
+        :label-position="'right'"
+        label-width="auto"
+      >
+        <el-form-item label="Timestamp">
+          <el-input v-model="nowTimestamp">
+            <template #append>ms</template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="Datetime">
+          <el-input v-model="nowDate">
+            <template #append>utc</template>
+          </el-input>
+        </el-form-item>
+        <el-form-item style="float: right;">
+          <el-button color="#FDC93A" @click="reset()">Reset</el-button>
+          <el-tooltip
+            class="box-item"
+            effect="dark"
+            content="Convert Datetime to Timestamp"
+            placement="left"
+          >
+            <el-button color="#FDC93A" @click="convertDatetime()">Convert</el-button>
+          </el-tooltip>
+        </el-form-item>
+      </el-form>
     </el-card>
   </div>
 </template>
 
 <style scoped>
-table {
-  width: 100%;
-}
 
-.time-btn {
-  float: right;
-  margin-top: 5px;
-}
 </style>
