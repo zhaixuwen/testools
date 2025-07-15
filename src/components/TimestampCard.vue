@@ -102,7 +102,7 @@ onMounted(() => {
           </el-input>
         </el-form-item>
         <!-- 按钮靠右对齐，并增加顶部和底部间距 -->
-        <el-form-item style="float: right; margin-top: 10px; margin-bottom: 20px;">
+        <el-form-item style="float: right; margin-top: 15px; margin-bottom: 25px;">
           <el-tooltip
             class="box-item"
             effect="dark"
@@ -125,7 +125,7 @@ onMounted(() => {
           </el-input>
         </el-form-item>
         <!-- 按钮靠右对齐，并增加顶部和底部间距 -->
-        <el-form-item style="float: right; margin-top: 10px; margin-bottom: 20px;">
+        <el-form-item style="float: right; margin-top: 15px; margin-bottom: 25px;">
           <el-tooltip
             class="box-item"
             effect="dark"
@@ -138,8 +138,8 @@ onMounted(() => {
 
         <el-divider /> <!-- 分隔功能和重置按钮 -->
 
-        <!-- 重置按钮 -->
-        <el-form-item style="float: right; margin-top: 10px; margin-bottom: 20px;">
+        <!-- 重置按钮，靠右对齐，并增加顶部和底部间距 -->
+        <el-form-item style="float: right; margin-top: 15px; margin-bottom: 25px;">
           <el-button color="#FDC93A" @click="resetAll()">Reset All</el-button>
         </el-form-item>
       </el-form>
