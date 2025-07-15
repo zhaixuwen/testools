@@ -51,13 +51,13 @@ const copyToClipboard = (text) => {
 const generateUUID = () => {
   // 生成新的 UUID
   smallUUID.value = crypto.randomUUID()
-  // 复制生成的 UUID 到剪贴板
+  // 仅在点击按钮时，才尝试复制生成的 UUID 到剪贴板
   copyToClipboard(smallUUID.value)
 }
 
 onMounted(() => {
-  // 组件挂载时生成并复制一个 UUID
-  generateUUID()
+  // 组件挂载时，仅生成 UUID，不执行复制操作
+  smallUUID.value = crypto.randomUUID()
 })
 </script>
 
