@@ -26,7 +26,7 @@ const formatDate = (date) => {
 
 // --- 日期时间转时间戳功能相关变量 ---
 const datetimeInputForToTimestamp = ref('') // 用于输入的日期时间字符串
-const timestampOutputForToTimestamp = ref('') // 转换后的时间戳输出
+const timestampOutputForToToTimestamp = ref('') // 转换后的时间戳输出
 
 /**
  * 将日期时间字符串转换为时间戳 (UTC)
@@ -34,7 +34,7 @@ const timestampOutputForToTimestamp = ref('') // 转换后的时间戳输出
 const convertDatetimeToTimestamp = () => {
   const dateTimeString = datetimeInputForToTimestamp.value
   if (!dateTimeString) {
-    timestampOutputForToTimestamp.value = ''
+    timestampOutputForToToTimestamp.value = ''
     return
   }
   const [datePart, timePart] = dateTimeString.split(' ')
@@ -43,7 +43,7 @@ const convertDatetimeToTimestamp = () => {
 
   // Date.UTC() 接收的是 UTC 时间的各个组成部分，并返回 UTC 时间戳
   // 月份在 JavaScript Date 对象中是 0-11，所以需要 month - 1
-  timestampOutputForToTimestamp.value = Date.UTC(year, month - 1, day, hour, minute, second)
+  timestampOutputForToToTimestamp.value = Date.UTC(year, month - 1, day, hour, minute, second)
 }
 
 // --- 时间戳转日期时间功能相关变量 ---
@@ -70,7 +70,7 @@ const resetAll = () => {
   const now = new Date()
   // 日期时间转时间戳部分
   datetimeInputForToTimestamp.value = formatDate(now)
-  timestampOutputForToTimestamp.value = now.valueOf()
+  timestampOutputForToToTimestamp.value = now.valueOf()
 
   // 时间戳转日期时间部分
   timestampInputForToDatetime.value = now.valueOf()
@@ -97,12 +97,12 @@ onMounted(() => {
           <el-input v-model="datetimeInputForToTimestamp" placeholder="YYYY-MM-DD HH:mm:ss" />
         </el-form-item>
         <el-form-item label="Timestamp (ms)">
-          <el-input v-model="timestampOutputForToTimestamp" readonly type="number">
+          <el-input v-model="timestampOutputForToToTimestamp" readonly type="number">
             <template #append>ms</template>
           </el-input>
         </el-form-item>
-        <!-- 按钮靠右对齐，并增加顶部和底部间距 -->
-        <el-form-item style="float: right; margin-top: 15px; margin-bottom: 25px;">
+        <!-- 按钮独自占一行并靠右对齐 -->
+        <el-form-item class="button-full-width-right">
           <el-tooltip
             class="box-item"
             effect="dark"
@@ -124,8 +124,8 @@ onMounted(() => {
             <template #append>utc</template>
           </el-input>
         </el-form-item>
-        <!-- 按钮靠右对齐，并增加顶部和底部间距 -->
-        <el-form-item style="float: right; margin-top: 15px; margin-bottom: 25px;">
+        <!-- 按钮独自占一行并靠右对齐 -->
+        <el-form-item class="button-full-width-right">
           <el-tooltip
             class="box-item"
             effect="dark"
@@ -138,9 +138,9 @@ onMounted(() => {
 
         <el-divider /> <!-- 分隔功能和重置按钮 -->
 
-        <!-- 重置按钮，靠右对齐，并增加顶部和底部间距 -->
-        <el-form-item style="float: right; margin-top: 15px; margin-bottom: 25px;">
-          <el-button color="#FDC93A" @click="resetAll()">Reset All</el-button>
+        <!-- 重置按钮，独自占一行并靠右对齐 -->
+        <el-form-item class="button-full-width-right">
+          <el-button color="#FDC93A" plain @click="resetAll()">Reset All</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -163,5 +163,18 @@ onMounted(() => {
   margin-bottom: 10px; /* 减小默认的底部间距 */
 }
 
-/* 移除了 .button-row 样式，因为现在直接使用行内 style="float: right;" */
+/* 修正后的样式：确保按钮独自占一行并靠右对齐 */
+.button-full-width-right {
+  width: 100%; /* 确保 el-form-item 占据整个宽度 */
+  margin-top: 0px; /* 增加与上方输入框的间隔 */
+  margin-bottom: 0px; /* 增加与下方内容的间隔 */
+}
+
+/* 关键修正：针对 el-form-item 内部的 content 区域应用 Flexbox */
+.button-full-width-right :deep(.el-form-item__content) {
+  display: flex; /* 使用 Flexbox 布局 */
+  justify-content: flex-end; /* 将内容（按钮）推到右侧 */
+  width: 100%; /* 确保内容区域也占据整个宽度 */
+  margin-left: 0 !important; /* 覆盖 Element Plus 默认的左边距，确保完全右对齐 */
+}
 </style>
