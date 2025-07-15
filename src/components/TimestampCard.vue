@@ -101,7 +101,7 @@ onMounted(() => {
             <template #append>ms</template>
           </el-input>
         </el-form-item>
-        <el-form-item style="float: right;">
+        <el-form-item class="button-row">
           <el-tooltip
             class="box-item"
             effect="dark"
@@ -123,7 +123,7 @@ onMounted(() => {
             <template #append>utc</template>
           </el-input>
         </el-form-item>
-        <el-form-item style="float: right;">
+        <el-form-item class="button-row">
           <el-tooltip
             class="box-item"
             effect="dark"
@@ -137,7 +137,7 @@ onMounted(() => {
         <el-divider /> <!-- 分隔功能和重置按钮 -->
 
         <!-- 重置按钮 -->
-        <el-form-item style="float: right;">
+        <el-form-item class="button-row">
           <el-button color="#FDC93A" @click="resetAll()">Reset All</el-button>
         </el-form-item>
       </el-form>
@@ -146,14 +146,30 @@ onMounted(() => {
 </template>
 
 <style scoped>
-/* 保持原有的样式，如果需要可以添加更多 */
+/* 保持原有的样式 */
 .time-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-/* 增加分隔线样式 */
 .el-divider {
   margin: 20px 0;
 }
+
+/* 新增的样式：用于按钮行的对齐和间隔 */
+.button-row {
+  display: flex;
+  justify-content: flex-end; /* 将内容推到右侧 */
+  width: 100%; /* 确保占据整个宽度 */
+  margin-top: 10px; /* 增加与上方输入框的间隔 */
+  margin-bottom: 20px; /* 增加与下方内容的间隔 */
+}
+
+/* 调整 el-form-item 自身的默认间距，使其更紧凑 */
+.el-form-item {
+  margin-bottom: 10px; /* 减小默认的底部间距 */
+}
+
+/* 针对表单项中的标签和内容进行对齐调整，确保输入框和按钮的起始位置一致 */
+/* Element Plus 默认的 label-width="auto" 已经处理得很好，这里主要关注按钮的对齐 */
 </style>
