@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, onMounted } from 'vue'
 
 /**
  * 将 Date 对象格式化为 UTC 字符串 'YYYY-MM-DD HH:mm:ss'
@@ -8,10 +8,8 @@ import { ref, watch } from 'vue'
  */
 const formatDate = (date) => {
   const year = date.getUTCFullYear()
-  // getUTCMonth() 返回 0-11，所以需要 +1
   let month = date.getUTCMonth() + 1
-  // 修正：使用 getUTCDate() 获取日期中的天数，而不是 getUTCDay() (星期几)
-  let day = date.getUTCDate()
+  let day = date.getUTCDate() // 修正：使用 getUTCDate() 获取日期中的天数
   let hour = date.getUTCHours()
   let minute = date.getUTCMinutes()
   let second = date.getUTCSeconds()
@@ -26,63 +24,63 @@ const formatDate = (date) => {
   return `${year}-${month}-${day} ${hour}:${minute}:${second}`
 }
 
-// 初始化时获取当前的 UTC 时间戳和格式化日期
-const now = new Date()
-const nowTimestamp = ref(now.valueOf()) // 默认是本地时间的时间戳
-const nowDate = ref(formatDate(now)) // 默认是本地时间转换为 UTC 格式的字符串
+// --- 日期时间转时间戳功能相关变量 ---
+const datetimeInputForToTimestamp = ref('') // 用于输入的日期时间字符串
+const timestampOutputForToTimestamp = ref('') // 转换后的时间戳输出
 
 /**
- * 将格式化的日期时间字符串转换为时间戳
- * 这个函数会将 nowDate.value (UTC 字符串) 转换为 UTC 时间戳
+ * 将日期时间字符串转换为时间戳 (UTC)
  */
-const convertDatetime = () => {
-  // 分割日期和时间部分
-  const [datePart, timePart] = nowDate.value.split(' ')
-
-  // 分割年、月、日
+const convertDatetimeToTimestamp = () => {
+  const dateTimeString = datetimeInputForToTimestamp.value
+  if (!dateTimeString) {
+    timestampOutputForToTimestamp.value = ''
+    return
+  }
+  const [datePart, timePart] = dateTimeString.split(' ')
   const [year, month, day] = datePart.split('-').map(Number)
-  // 分割时、分、秒
   const [hour, minute, second] = timePart.split(':').map(Number)
 
   // Date.UTC() 接收的是 UTC 时间的各个组成部分，并返回 UTC 时间戳
-  // 注意：月份在 JavaScript Date 对象中是 0-11，所以需要 month - 1
-  nowTimestamp.value = Date.UTC(year, month - 1, day, hour, minute, second)
+  // 月份在 JavaScript Date 对象中是 0-11，所以需要 month - 1
+  timestampOutputForToTimestamp.value = Date.UTC(year, month - 1, day, hour, minute, second)
 }
+
+// --- 时间戳转日期时间功能相关变量 ---
+const timestampInputForToDatetime = ref('') // 用于输入的时间戳
+const datetimeOutputForToDatetime = ref('') // 转换后的日期时间字符串输出
 
 /**
- * 将时间戳转换为格式化的日期时间字符串
- * 这个函数会将 nowTimestamp.value 转换为 UTC 格式的日期时间字符串
+ * 将时间戳转换为日期时间字符串 (UTC)
  */
-const convertTimestamp = () => {
-  // 根据时间戳创建一个新的 Date 对象
-  const newDate = new Date(Number(nowTimestamp.value))
-  // 使用 formatDate 函数将其格式化为 UTC 字符串
-  nowDate.value = formatDate(newDate)
-}
-
-/**
- * 重置为当前 UTC 时间戳和格式化日期
- */
-const reset = () => {
-  const currentUTC = new Date() // 获取当前时间
-  nowTimestamp.value = currentUTC.valueOf() // 获取当前时间的时间戳
-  nowDate.value = formatDate(currentUTC) // 格式化为 UTC 字符串
-}
-
-// 监听 nowTimestamp 的变化，当时间戳改变时，自动更新格式化日期
-watch(nowTimestamp, (newVal, oldVal) => {
-  if (newVal !== oldVal) {
-    convertTimestamp()
+const convertTimestampToDatetime = () => {
+  const timestamp = Number(timestampInputForToDatetime.value)
+  if (isNaN(timestamp)) {
+    datetimeOutputForToDatetime.value = ''
+    return
   }
-}, { immediate: true }) // immediate: true 确保在组件初始化时也执行一次
+  const newDate = new Date(timestamp)
+  datetimeOutputForToDatetime.value = formatDate(newDate)
+}
 
-// 监听 nowDate 的变化，当日期字符串改变时，自动更新时间戳
-// 注意：这里需要避免循环触发，即当 convertTimestamp 更新 nowDate 时，不应再次触发 convertDatetime
-// 最简单的处理方式是让用户点击按钮进行转换，或者更复杂的判断，这里先保持用户点击按钮触发
-// 如果需要自动双向同步，需要更精细的 watch 逻辑，例如使用 deep watch 或设置一个标志位
-// 但考虑到现有按钮，我们让 convertDatetime 仅在点击按钮时触发，以避免输入时的频繁转换和潜在的循环
-// 因此，这里不添加对 nowDate 的 watch，而是依赖用户点击 "Convert" 按钮。
-// 如果用户在输入框中手动修改了日期，需要点击 Convert 按钮才能更新时间戳。
+/**
+ * 重置所有输入框和输出框为当前 UTC 时间
+ */
+const resetAll = () => {
+  const now = new Date()
+  // 日期时间转时间戳部分
+  datetimeInputForToTimestamp.value = formatDate(now)
+  timestampOutputForToTimestamp.value = now.valueOf()
+
+  // 时间戳转日期时间部分
+  timestampInputForToDatetime.value = now.valueOf()
+  datetimeOutputForToDatetime.value = formatDate(now)
+}
+
+// 组件挂载时，初始化所有输入和输出为当前 UTC 时间
+onMounted(() => {
+  resetAll()
+})
 </script>
 
 <template>
@@ -93,32 +91,54 @@ watch(nowTimestamp, (newVal, oldVal) => {
           <span>Timestamp Conversion</span>
         </div>
       </template>
-      <el-form
-        :label-position="'right'"
-        label-width="auto"
-      >
-        <el-form-item label="Timestamp">
-          <el-input v-model="nowTimestamp" type="number">
+      <el-form :label-position="'right'" label-width="auto">
+        <!-- 日期时间转时间戳 -->
+        <el-form-item label="Datetime (UTC)">
+          <el-input v-model="datetimeInputForToTimestamp" placeholder="YYYY-MM-DD HH:mm:ss" />
+        </el-form-item>
+        <el-form-item label="Timestamp (ms)">
+          <el-input v-model="timestampOutputForToTimestamp" readonly type="number">
             <template #append>ms</template>
           </el-input>
         </el-form-item>
-        <el-form-item label="Datetime">
-          <el-input v-model="nowDate">
-            <template #append>utc</template>
-          </el-input>
-        </el-form-item>
         <el-form-item style="float: right;">
-          <!-- 重置按钮 -->
-          <el-button color="#FDC93A" @click="reset()">Reset</el-button>
-          <!-- 转换按钮（日期转时间戳） -->
           <el-tooltip
             class="box-item"
             effect="dark"
             content="Convert Datetime to Timestamp"
             placement="left"
           >
-            <el-button color="#FDC93A" @click="convertDatetime()">Convert</el-button>
+            <el-button color="#FDC93A" @click="convertDatetimeToTimestamp()">Convert Datetime</el-button>
           </el-tooltip>
+        </el-form-item>
+
+        <el-divider /> <!-- 分隔两个功能 -->
+
+        <!-- 时间戳转日期时间 -->
+        <el-form-item label="Timestamp (ms)">
+          <el-input v-model="timestampInputForToDatetime" type="number" />
+        </el-form-item>
+        <el-form-item label="Datetime (UTC)">
+          <el-input v-model="datetimeOutputForToDatetime" readonly placeholder="YYYY-MM-DD HH:mm:ss">
+            <template #append>utc</template>
+          </el-input>
+        </el-form-item>
+        <el-form-item style="float: right;">
+          <el-tooltip
+            class="box-item"
+            effect="dark"
+            content="Convert Timestamp to Datetime"
+            placement="left"
+          >
+            <el-button color="#FDC93A" @click="convertTimestampToDatetime()">Convert Timestamp</el-button>
+          </el-tooltip>
+        </el-form-item>
+
+        <el-divider /> <!-- 分隔功能和重置按钮 -->
+
+        <!-- 重置按钮 -->
+        <el-form-item style="float: right;">
+          <el-button color="#FDC93A" @click="resetAll()">Reset All</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -131,5 +151,9 @@ watch(nowTimestamp, (newVal, oldVal) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+/* 增加分隔线样式 */
+.el-divider {
+  margin: 20px 0;
 }
 </style>
