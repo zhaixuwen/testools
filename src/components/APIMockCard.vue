@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { Plus, Minus } from '@element-plus/icons-vue'
+import { Plus, Minus, Upload, Close, Promotion } from '@element-plus/icons-vue'
 import axios from 'axios'
 
 const axiosInstance = axios.create({
@@ -19,6 +19,8 @@ const header = ref([
 const params = ref([{ key: '', value: '' }])
 const body = ref('')
 const response = ref('')
+const curlDialogVisible = ref(false)
+const curlCommand = ref('')
 
 const handleClose = () => {
   dialogVisible.value = false
@@ -62,6 +64,85 @@ const handelHeader = () => {
     }
   }
   return newHeader
+}
+
+const parseCurlCommand = () => {
+  const curl = curlCommand.value.trim()
+  if (!curl.startsWith('curl')) {
+    return
+  }
+
+  // Extract URL - keep the complete URL in path
+  const urlMatch = curl.match(/curl\s+(?:-[^\s]+\s+)*['"]?([^'"?\s]+)/) || 
+                   curl.match(/['"]([^'"]+)['"]/) ||
+                   curl.match(/(\S+)/)
+  if (urlMatch) {
+    const url = urlMatch[1]
+    // Use the complete URL instead of just pathname
+    path.value = url
+  }
+
+  // Extract method - check for -X flag or --request flag, default to POST if data is present
+  const methodMatch = curl.match(/-X\s+(\w+)/i) || curl.match(/--request\s+(\w+)/i)
+  if (methodMatch) {
+    method.value = methodMatch[1].toLowerCase()
+  } else {
+    // If no explicit method but has data, assume POST
+    const hasData = curl.includes(' -d ') || curl.includes(' --data') || curl.includes(' --data-raw')
+    if (hasData) {
+      method.value = 'post'
+    } else {
+      method.value = 'get'
+    }
+  }
+
+  // Extract headers
+  const headerMatches = curl.matchAll(/-H\s+['"]([^'"]+)['"]/g)
+  const newHeaders = []
+  for (const match of headerMatches) {
+    const headerValue = match[1]
+    const colonIndex = headerValue.indexOf(':')
+    if (colonIndex > 0) {
+      const key = headerValue.substring(0, colonIndex).trim()
+      const value = headerValue.substring(colonIndex + 1).trim()
+      if (key && value) {
+        newHeaders.push({ key, value })
+      }
+    }
+  }
+  if (newHeaders.length > 0) {
+    header.value = newHeaders
+  }
+
+  // Extract body data - handle multiple formats with proper multiline support
+  let bodyData = ''
+  
+  // Try to match --data-raw first (most common for JSON)
+  let dataRawMatch = curl.match(/--data-raw\s+'([^']*(?:'[^']*)*)'|--data-raw\s+"([^"]*(?:"[^"]*)*)"/s)
+  if (dataRawMatch) {
+    bodyData = dataRawMatch[1] || dataRawMatch[2]
+  } else {
+    // Try other data formats
+    let dataMatch = curl.match(/-d\s+'([^']*(?:'[^']*)*)'|--data\s+'([^']*(?:'[^']*)*)'|-d\s+"([^"]*(?:"[^"]*)*)"|--data\s+"([^"]*(?:"[^"]*)*)"/s)
+    if (dataMatch) {
+      bodyData = dataMatch[1] || dataMatch[2] || dataMatch[3] || dataMatch[4]
+    } else {
+      // Try unquoted data
+      let unquotedMatch = curl.match(/-d\s+([^-\s][^\s]*)|--data\s+([^-\s][^\s]*)|--data-raw\s+([^-\s][^\s]*)/s)
+      if (unquotedMatch) {
+        bodyData = unquotedMatch[1] || unquotedMatch[2] || unquotedMatch[3]
+      }
+    }
+  }
+
+  if (bodyData) {
+    // Handle escaped characters
+    bodyData = bodyData.replace(/\\"/g, '"').replace(/\\'/g, "'").replace(/\\n/g, '\n').replace(/\\t/g, '\t').replace(/\\\\/g, '\\')
+    body.value = bodyData
+  }
+
+  curlDialogVisible.value = false
+  curlCommand.value = ''
 }
 
 const sendRequest = () => {
@@ -169,8 +250,31 @@ const sendRequest = () => {
       </div>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="dialogVisible = false">Cancel</el-button>
-          <el-button color="#FDC93A" @click="sendRequest">Send request</el-button>
+          <el-button @click="dialogVisible = false" :icon="Close">Cancel</el-button>
+          <el-button @click="curlDialogVisible = true" :icon="Upload">Import from cURL</el-button>
+          <el-button color="#FDC93A" @click="sendRequest" :icon="Promotion">Send request</el-button>
+        </div>
+      </template>
+    </el-dialog>
+    <el-dialog
+      v-model="curlDialogVisible"
+      title="Import from cURL"
+      width="50%"
+    >
+      <el-form>
+        <el-form-item label="cURL Command">
+          <el-input 
+            v-model="curlCommand" 
+            type="textarea" 
+            rows="6" 
+            placeholder="Paste your cURL command here..."
+          />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="curlDialogVisible = false" :icon="Close">Cancel</el-button>
+          <el-button color="#FDC93A" @click="parseCurlCommand" :icon="Upload">Import</el-button>
         </div>
       </template>
     </el-dialog>
