@@ -25,6 +25,7 @@ import APIMockCard from '@/components/APIMockCard.vue'
           <el-col :span="7">
             <div class="card"><UUIDCard /></div>
             <div class="card"><UserInfoCard /></div>
+            <div class="card"><BlankClearCard /></div>
           </el-col>
           <el-col :span="7">
             <div class="card"><TimestampCard /></div>
