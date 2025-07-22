@@ -5,6 +5,7 @@ import UserInfoCard from '@/components/UserInfoCard.vue'
 import JsonFormatCard from '@/components/JsonFormatCard.vue'
 import JsonCompareCard from '@/components/JsonCompareCard.vue'
 import APIMockCard from '@/components/APIMockCard.vue'
+import BlankClearCard from '@/components/BlankClearCard.vue'
 
 </script>
 
