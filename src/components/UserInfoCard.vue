@@ -104,46 +104,162 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
-    <el-card shadow="hover">
-      <template #header>
-        <div class="user-header">
-          <span>User Info Generator</span>
+  <div class="tool-card">
+    <div class="tool-header">
+      <h3>用户信息生成器</h3>
+      <div class="tool-description">生成随机的用户身份信息</div>
+    </div>
+    
+    <div class="tool-content">
+      <div class="info-section">
+        <div class="input-group">
+          <div class="input-label">姓名（简体中文）</div>
+          <el-input
+            v-model="username"
+            class="custom-input"
+            readonly
+          />
         </div>
-      </template>
-      <el-form
-        :label-position="'right'"
-        label-width="auto"
-      >
-        <el-form-item label="Name(Simplified Chinese)">
-          <el-input v-model="username" />
-        </el-form-item>
-        <el-form-item label="Birthday">
-          <el-input v-model="birthday" />
-        </el-form-item>
-        <el-form-item label="Phone number">
-          <el-input v-model="phoneNumber" />
-        </el-form-item>
-        <el-form-item label="ID Card number">
-          <el-input v-model="idCardNumber" />
-        </el-form-item>
-        <el-form-item label="Bank Card number">
-          <el-input v-model="bankCardNumber" />
-        </el-form-item>
-        <el-form-item style="float: right;">
-          <el-button color="#FDC93A" @click="refreshInfo()">Generate</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
-  </div>
+        
+        <div class="input-group">
+          <div class="input-label">出生日期</div>
+          <el-input
+            v-model="birthday"
+            class="custom-input"
+            readonly
+          />
+        </div>
+        
+        <div class="input-group">
+          <div class="input-label">手机号码</div>
+          <el-input
+            v-model="phoneNumber"
+            class="custom-input"
+            readonly
+          />
+        </div>
+        
+        <div class="input-group">
+          <div class="input-label">身份证号</div>
+          <el-input
+            v-model="idCardNumber"
+            class="custom-input"
+            readonly
+          />
+        </div>
+        
+        <div class="input-group">
+          <div class="input-label">银行卡号</div>
+          <el-input
+            v-model="bankCardNumber"
+            class="custom-input"
+            readonly
+          />
+        </div>
+      </div>
 
+      <div class="button-group">
+        <el-button 
+          type="primary"
+          @click="refreshInfo"
+          class="action-button"
+        >
+          生成新信息
+        </el-button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
-/* 保持原有的样式 */
-.user-header {
+.tool-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.tool-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.tool-header {
+  margin-bottom: 20px;
+}
+
+.tool-header h3 {
+  font-size: 18px;
+  margin: 0 0 8px 0;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.tool-description {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.tool-content {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.info-section {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.input-group:last-child {
+  margin-bottom: 0;
+}
+
+.input-label {
+  font-size: 14px;
+  color: #606266;
+  font-weight: 500;
+}
+
+.custom-input :deep(.el-input__wrapper) {
+  border-radius: 8px;
+  box-shadow: 0 0 0 1px #e4e7ed;
+  transition: all 0.3s ease;
+}
+
+.custom-input :deep(.el-input__inner) {
+  font-size: 14px;
+  height: 40px;
+  background-color: #f8f9fa;
+  cursor: default;
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.action-button {
+  border-radius: 8px;
+  height: 40px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  min-width: 120px;
+}
+
+.action-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(64, 158, 255, 0.2);
 }
 </style>

@@ -175,29 +175,52 @@ const sendRequest = () => {
 </script>
 
 <template>
-  <div>
-    <el-card shadow="hover">
-      <template #header>
-        <div class="time-header">
-          <span>API Mocker</span>
-        </div>
-      </template>
-      <div class="btn-area">
-        <el-button color="#FDC93A" @click="dialogVisible = true">Go to mock page</el-button>
-      </div>
-    </el-card>
-    <el-dialog
-      v-model="dialogVisible"
-      title="Mock API"
-      width="50%"
-      :before-close="handleClose"
-    >
-      <div class="mock-area">
-        <el-form
-          :label-position="'right'"
-          label-width="auto"
+  <div class="tool-card">
+    <div class="tool-header">
+      <h3>API 调试工具</h3>
+      <div class="tool-description">模拟 API 请求，支持导入 cURL 命令</div>
+    
+    <div class="tool-content">
+      <div class="tool-actions">
+        <el-button 
+          type="primary"
+          @click="dialogVisible = true"
+          class="action-button"
+          icon="Promotion"
         >
-          <el-form-item label="Method">
+          开始调试
+        </el-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Dialog -->
+  <el-dialog
+    v-model="dialogVisible"
+    title="API 调试"
+    width="70%"
+    :before-close="handleClose"
+    class="mock-dialog"
+    append-to-body
+    destroy-on-close
+  >
+    <div class="mock-container">
+        <div class="curl-import">
+          <el-button 
+            @click="curlDialogVisible = true"
+            class="import-button"
+            :icon="Upload"
+          >
+            导入 cURL
+          </el-button>
+        </div>
+        
+        <el-form
+          class="mock-form"
+          :label-position="'left'"
+          label-width="100px"
+        >
+          <el-form-item label="请求方法">
             <el-select v-model="method" style="width: 25%">
               <el-option label="GET" value="get" />
               <el-option label="POST" value="post" />
@@ -209,68 +232,82 @@ const sendRequest = () => {
             <el-input v-model="path"></el-input>
           </el-form-item>
           <el-form-item label="Header">
-            <div>
-              <el-row :gutter="10" v-for="(h, index) in header" :key="index">
-                <el-col :span="9">
-                  <el-input v-model="h.key" />
-                </el-col>
-                <el-col :span="9">
-                  <el-input v-model="h.value" />
-                </el-col>
-                <el-col :span="6">
-                  <el-button @click="delHeader(index)" :icon="Minus"></el-button>
-                  <el-button v-if="index===(header.length-1)" @click="addHeader" :icon="Plus"></el-button>
-                </el-col>
-              </el-row>
+            <div class="header-list">
+              <div class="header-item" v-for="(h, index) in header" :key="index">
+                <el-input v-model="h.key" placeholder="Header Name" class="custom-input" />
+                <el-input v-model="h.value" placeholder="Header Value" class="custom-input" />
+                <el-button type="danger" @click="delHeader(index)" :icon="Minus" circle></el-button>
+                <el-button v-if="index===(header.length-1)" @click="addHeader" :icon="Plus" circle></el-button>
+              </div>
             </div>
           </el-form-item>
-          <el-form-item label="Param">
-            <div>
-              <el-row :gutter="10" v-for="(p, index) in params" :key="index">
-                <el-col :span="9">
-                  <el-input v-model="p.key" />
-                </el-col>
-                <el-col :span="9">
-                  <el-input v-model="p.value" />
-                </el-col>
-                <el-col :span="6">
-                  <el-button @click="delParam(index)" :icon="Minus"></el-button>
-                  <el-button v-if="index===(params.length-1)" @click="addParam" :icon="Plus"></el-button>
-                </el-col>
-              </el-row>
+          
+          <el-form-item label="参数">
+            <div class="param-list">
+              <div class="param-item" v-for="(p, index) in params" :key="index">
+                <el-input v-model="p.key" placeholder="参数名" class="custom-input" />
+                <el-input v-model="p.value" placeholder="参数值" class="custom-input" />
+                <el-button type="danger" @click="delParam(index)" :icon="Minus" circle></el-button>
+                <el-button v-if="index===(params.length-1)" @click="addParam" :icon="Plus" circle></el-button>
+              </div>
             </div>
           </el-form-item>
-          <el-form-item label="Body">
-            <el-input v-model="body" type="textarea" rows="5" />
+          
+          <el-form-item label="请求体">
+            <el-input 
+              v-model="body" 
+              type="textarea" 
+              rows="5"
+              placeholder="请输入 JSON 格式的请求体"
+              class="custom-input"
+            />
           </el-form-item>
-          <el-form-item label="Response" v-if="response">
-            <el-input v-model="response" type="textarea" rows="5" />
+          
+          <el-form-item label="响应" v-if="response">
+            <div class="response-section">
+              <el-input 
+                v-model="response" 
+                type="textarea" 
+                rows="8"
+                readonly
+                class="custom-input"
+              />
+            </div>
           </el-form-item>
         </el-form>
       </div>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="dialogVisible = false" :icon="Close">Cancel</el-button>
-          <el-button @click="curlDialogVisible = true" :icon="Upload">Import from cURL</el-button>
-          <el-button color="#FDC93A" @click="sendRequest" :icon="Promotion">Send request</el-button>
+          <el-button @click="dialogVisible = false" class="cancel-button">
+            关闭
+          </el-button>
+          <el-button 
+            type="primary"
+            @click="sendRequest"
+            class="action-button"
+          >
+            发送请求
+          </el-button>
         </div>
       </template>
     </el-dialog>
+
+    <!-- Curl Import Dialog -->
     <el-dialog
       v-model="curlDialogVisible"
-      title="Import from cURL"
-      width="50%"
+      title="导入 cURL 命令"
+      width="600px"
+      class="curl-dialog"
+      append-to-body
+      destroy-on-close
     >
-      <el-form>
-        <el-form-item label="cURL Command">
-          <el-input 
-            v-model="curlCommand" 
-            type="textarea" 
-            rows="6" 
-            placeholder="Paste your cURL command here..."
-          />
-        </el-form-item>
-      </el-form>
+      <el-input 
+        v-model="curlCommand" 
+        type="textarea" 
+        rows="8" 
+        placeholder="在此粘贴 cURL 命令..."
+        class="curl-input"
+      />
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="curlDialogVisible = false" :icon="Close">Cancel</el-button>
@@ -282,8 +319,177 @@ const sendRequest = () => {
 </template>
 
 <style scoped>
-.btn-area {
-  float: right;
+.tool-card {
+  background: linear-gradient(145deg, #ffffff, #f8fafc);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
+  height: auto;
+  min-height: 200px;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.tool-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.05);
+}
+
+.tool-header {
   margin-bottom: 20px;
+}
+
+.tool-header h3 {
+  font-size: 18px;
+  margin: 0 0 8px 0;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.tool-description {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.tool-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 24px;
+  padding: 20px 0;
+}
+
+.tool-actions {
+  text-align: center;
+}
+
+.action-button {
+  border-radius: 8px;
+  height: 40px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  min-width: 120px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.action-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(64, 158, 255, 0.2);
+}
+
+/* Dialog 样式 */
+.mock-dialog {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.mock-dialog :deep(.el-dialog) {
+  border-radius: 12px;
+  margin: 0 !important;
+}
+
+.mock-dialog :deep(.el-dialog__header) {
+  margin: 0;
+  padding: 20px;
+  border-bottom: 1px solid #e4e7ed;
+}
+
+.mock-dialog :deep(.el-dialog__body) {
+  padding: 24px;
+  max-height: calc(90vh - 200px);
+  overflow-y: auto;
+}
+
+.mock-dialog :deep(.el-dialog__footer) {
+  border-top: 1px solid #e4e7ed;
+  padding: 16px 24px;
+}
+
+.mock-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.mock-form {
+  margin-top: 16px;
+}
+
+.header-list,
+.param-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.header-item,
+.param-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.custom-input :deep(.el-input__wrapper) {
+  border-radius: 8px;
+}
+
+.curl-dialog :deep(.el-dialog) {
+  border-radius: 12px;
+}
+
+.curl-dialog :deep(.el-dialog__body) {
+  padding: 24px;
+}
+
+.curl-dialog :deep(.el-dialog__header) {
+  margin: 0;
+  padding: 20px;
+  border-bottom: 1px solid #e4e7ed;
+}
+
+.curl-dialog :deep(.el-dialog__footer) {
+  border-top: 1px solid #e4e7ed;
+  padding: 16px 24px;
+}
+
+.curl-input {
+  width: 100%;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .mock-dialog :deep(.el-dialog),
+  .curl-dialog :deep(.el-dialog) {
+    width: 90vw !important;
+    margin: 0 auto !important;
+  }
+
+  .header-item,
+  .param-item {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .header-item .el-button,
+  .param-item .el-button {
+    grid-column: span 1;
+  }
+
+  .tool-content {
+    padding: 10px 0;
+  }
 }
 </style>

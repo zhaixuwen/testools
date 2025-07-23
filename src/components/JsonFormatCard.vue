@@ -1,87 +1,292 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
+import * as monaco from 'monaco-editor'
 
 const jsonData = ref('')
-const viewportHeight = ref(window.innerHeight)
+const editorContainer = ref(null)
+let editor = null
 
-const updateViewportHeight = () => {
-  viewportHeight.value = window.innerHeight
-}
-
-onMounted(() => {
-  window.addEventListener('resize', updateViewportHeight)
+onMounted(async () => {
+  await nextTick()
+  
+  // 初始化编辑器
+  editor = monaco.editor.create(editorContainer.value, {
+    value: '',
+    language: 'json',
+    theme: 'vs-light',
+    automaticLayout: true,
+    minimap: { enabled: false },
+    fontSize: 14,
+    lineHeight: 21,
+    fontFamily: "'Menlo', 'Monaco', 'Courier New', monospace",
+    scrollBeyondLastLine: false,
+    roundedSelection: true,
+    renderLineHighlight: 'all',
+    cursorStyle: 'line',
+    cursorWidth: 2,
+    lineNumbers: 'on',
+    contextmenu: false,
+    folding: true,
+    wordWrap: 'on',
+    bracketPairColorization: { enabled: true },
+    formatOnPaste: true,
+    fixedOverflowWidgets: true, // 防止提示框溢出
+    scrollbar: {
+      vertical: 'visible',
+      horizontal: 'visible',
+      useShadows: true,
+      verticalHasArrows: false,
+      horizontalHasArrows: false,
+      verticalScrollbarSize: 10,
+      horizontalScrollbarSize: 10
+    }
+  })
+  
+  // 监听内容变化
+  editor.onDidChangeModelContent(() => {
+    jsonData.value = editor.getValue()
+  })
 })
 
 onUnmounted(() => {
-  window.removeEventListener('resize', updateViewportHeight)
+  if (editor) {
+    editor.dispose()
+  }
 })
 
-const autoSizeConfig = computed(() => {
-  const lines = jsonData.value.split('\n').length
-  const minRows = Math.min(10, lines)
-  
-  // Set a reasonable max height that keeps buttons visible
-  // Calculate max rows based on viewport height but with stricter limits
-  const availableHeight = Math.min(viewportHeight.value * 0.6, 500) // Max 60% of viewport or 500px
-  const maxRowsByHeight = Math.floor(availableHeight / 24)
-  const maxRows = Math.min(maxRowsByHeight, 20) // Never exceed 20 rows
-  
-  return { minRows: Math.max(minRows, 5), maxRows: Math.max(maxRows, 15) }
-})
-
-const formatJson = () => {
-  const jsonObj = JSON.parse(jsonData.value.trim())
-  jsonData.value = JSON.stringify(jsonObj, null, 4)
+const formatJson = async () => {
+  try {
+    const value = editor.getValue().trim()
+    if (!value) return
+    
+    const jsonObj = JSON.parse(value)
+    const formatted = JSON.stringify(jsonObj, null, 2)
+    
+    // 使用编辑器的格式化命令
+    editor.setValue(formatted)
+    editor.getAction('editor.action.formatDocument').run()
+    
+    ElMessage({
+      type: 'success',
+      message: '格式化成功'
+    })
+  } catch (error) {
+    console.error('格式化错误:', error)
+    ElMessage({
+      type: 'error',
+      message: error.message || '无效的 JSON 格式'
+    })
+  }
 }
 
 const compressJson = () => {
-  const jsonObj = JSON.parse(jsonData.value.trim())
-  jsonData.value = JSON.stringify(jsonObj)
+  try {
+    const value = editor.getValue().trim()
+    if (!value) return
+    
+    const jsonObj = JSON.parse(value)
+    const compressed = JSON.stringify(jsonObj)
+    editor.setValue(compressed)
+    
+    ElMessage({
+      type: 'success',
+      message: '压缩成功'
+    })
+  } catch (error) {
+    ElMessage({
+      type: 'error',
+      message: '无效的 JSON 格式'
+    })
+  }
 }
 
 const copyJsonData = () => {
-  navigator.clipboard.writeText(jsonData.value).then(() => {
+  const value = editor.getValue()
+  if (!value) return
+  
+  navigator.clipboard.writeText(value).then(() => {
     ElMessage({
-      message: 'JSON has been copied to clipboard.',
-      type: 'success'
+      type: 'success',
+      message: '已复制到剪贴板'
     })
   })
 }
 
 const clearJsonData = () => {
-  jsonData.value = ''
+  editor.setValue('')
+  editor.focus()
 }
 </script>
 
 <template>
-  <div>
-    <el-card shadow="hover">
-      <template #header>
-        <div class="uuid-header">
-          <span>JSON Formatter</span>
-        </div>
-      </template>
-      <el-input v-model="jsonData" type="textarea" :autosize="autoSizeConfig"></el-input>
-      <div class="btn-list">
-        <el-button @click="formatJson()" color="#FDC93A">Format</el-button>
-        <el-button @click="compressJson()" color="#FDC93A">Compress</el-button>
-        <el-button @click="copyJsonData()" color="#FDC93A" plain>Copy</el-button>
-        <el-button @click="clearJsonData()" color="#FDC93A" plain>Clear</el-button>
+  <div class="tool-card">
+    <div class="tool-header">
+      <h3>JSON 格式化工具</h3>
+      <div class="tool-description">格式化、压缩和编辑 JSON 数据</div>
+    </div>
+    
+    <div class="tool-content">
+      <div class="editor-section">
+        <div ref="editorContainer" class="monaco-editor-container"></div>
       </div>
-    </el-card>
+
+      <div class="button-group">
+        <el-button 
+          type="primary"
+          @click="formatJson"
+          class="action-button"
+        >
+          格式化
+        </el-button>
+        <el-button 
+          @click="compressJson"
+          class="action-button"
+        >
+          压缩
+        </el-button>
+        <el-button 
+          @click="copyJsonData"
+          class="action-button"
+          :disabled="!jsonData"
+        >
+          复制
+        </el-button>
+        <el-button 
+          @click="clearJsonData"
+          class="action-button"
+          :disabled="!jsonData"
+        >
+          清空
+        </el-button>
+      </div>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.btn-list {
-  margin-top: 10px;
+.tool-card {
+  background: linear-gradient(145deg, #ffffff, #f8fafc);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
+  height: 100%;
+  min-height: 500px;
+  max-height: 800px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.tool-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.05);
+}
+
+.tool-header {
   margin-bottom: 20px;
-  float: right;
-  position: sticky;
-  bottom: 0;
-  background: white;
-  padding: 10px 0;
-  z-index: 10;
+}
+
+.tool-header h3 {
+  font-size: 18px;
+  margin: 0 0 8px 0;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.tool-description {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.tool-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+  min-height: 0; /* 重要：防止 flex 子项溢出 */
+  overflow: hidden;
+}
+
+.editor-section {
+  flex: 1;
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 4px;
+  min-height: 0; /* 重要：防止 flex 子项溢出 */
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.monaco-editor-container {
+  flex: 1;
+  min-height: 0; /* 重要：防止 flex 子项溢出 */
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative; /* 重要：为 Monaco Editor 提供定位上下文 */
+}
+
+:deep(.monaco-editor) {
+  position: absolute; /* 重要：使编辑器填充容器 */
+  inset: 0;
+  height: 100% !important;
+  width: 100% !important;
+}
+
+:deep(.monaco-editor .overflow-guard) {
+  border-radius: 6px;
+}
+
+:deep(.monaco-editor .inputarea.ime-input) {
+  padding: 0;
+}
+
+.button-group {
+  margin-top: 16px;
+  display: flex;
+  gap: 12px;
+  padding-bottom: 4px;
+}
+
+.action-button {
+  border-radius: 6px;
+  height: 36px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  padding: 0 16px;
+  min-width: 80px;
+  font-size: 14px;
+}
+
+.action-button:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+.action-button:first-child:hover {
+  box-shadow: 0 4px 8px rgba(64, 158, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+  .button-group {
+    padding: 8px;
+    margin: 0 -8px -8px -8px;
+    gap: 6px;
+  }
+
+  .action-button {
+    flex: 1;
+    min-width: calc(50% - 3px);
+    max-width: calc(50% - 3px);
+    padding: 0 8px;
+    height: 32px;
+  }
 }
 </style>

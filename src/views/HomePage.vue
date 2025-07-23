@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from 'vue'
 import UUIDCard from '@/components/UUIDCard.vue'
 import TimestampCard from '@/components/TimestampCard.vue'
 import UserInfoCard from '@/components/UserInfoCard.vue'
@@ -7,47 +8,272 @@ import JsonCompareCard from '@/components/JsonCompareCard.vue'
 import APIMockCard from '@/components/APIMockCard.vue'
 import BlankClearCard from '@/components/BlankClearCard.vue'
 
+const activeCategory = ref('daily')
+
+const categories = [
+  {
+    id: 'daily',
+    name: '日常工具',
+    icon: 'Tools',
+    tools: [
+      { component: UUIDCard, name: 'UUID 生成器' },
+      { component: TimestampCard, name: '时间戳转换' }
+    ]
+  },
+  {
+    id: 'text',
+    name: '字符处理',
+    icon: 'Document',
+    tools: [
+      { component: BlankClearCard, name: '空白字符清理' }
+    ]
+  },
+  {
+    id: 'debug',
+    name: '开发调试',
+    icon: 'Monitor',
+    tools: [
+      { component: APIMockCard, name: 'API 调试工具' }
+    ]
+  },
+  {
+    id: 'mock',
+    name: '模拟数据',
+    icon: 'DataLine',
+    tools: [
+      { component: UserInfoCard, name: '用户信息生成' }
+    ]
+  },
+  {
+    id: 'json',
+    name: 'JSON 工具',
+    icon: 'Document',
+    tools: [
+      { component: JsonFormatCard, name: 'JSON 格式化' },
+      { component: JsonCompareCard, name: 'JSON 对比工具' }
+    ]
+  }
+]
 </script>
 
 <template>
-  <div class="home-page">
-    <el-container>
-      <el-header class="home-header">
-        <el-menu mode="horizontal">
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <el-space>
-            <img src="../assets/logo.svg" alt="Toolkit Logo" height="24px" width="24px" />
-            <h1>Testools</h1>
-          </el-space>
-        </el-menu>
-      </el-header>
-      <el-main class="home-main">
-        <el-row :gutter="20">
-          <el-col :span="7">
-            <div class="card"><UUIDCard /></div>
-            <div class="card"><UserInfoCard /></div>
-            <div class="card"><BlankClearCard /></div>
-          </el-col>
-          <el-col :span="7">
-            <div class="card"><TimestampCard /></div>
-            <div class="card"><JsonCompareCard /></div>
-            <div class="card"><APIMockCard /></div>
-          </el-col>
-          <el-col :span="10">
-            <div class="card"><JsonFormatCard /></div>
-          </el-col>
-        </el-row>
-      </el-main>
-    </el-container>
-  </div>
+  <el-container class="home-page">
+    <el-header class="app-header">
+      <div class="header-content">
+        <div class="logo-section">
+          <img src="../assets/logo.svg" alt="Toolkit Logo" class="logo" />
+          <h1 class="app-title">Testools</h1>
+        </div>
+        <div class="header-right">
+          <a href="https://github.com/zhaixuwen/testools" target="_blank" class="github-link">
+            <i class="el-icon-position"></i> Github
+          </a>
+        </div>
+      </div>
+    </el-header>
+
+    <el-main class="app-main">
+      <div class="container">
+        <el-card class="category-card">
+          <el-tabs v-model="activeCategory" class="category-tabs">
+            <el-tab-pane
+              v-for="category in categories"
+              :key="category.id"
+              :label="category.name"
+              :name="category.id"
+            >
+              <div class="tools-grid">
+                <el-row :gutter="32">
+                  <el-col 
+                    v-for="tool in category.tools" 
+                    :key="tool.name"
+                    :xs="24" 
+                    :sm="24" 
+                    :md="12" 
+                    :lg="12" 
+                    class="tool-col"
+                  >
+                    <component :is="tool.component" />
+                  </el-col>
+                </el-row>
+              </div>
+            </el-tab-pane>
+          </el-tabs>
+        </el-card>
+      </div>
+    </el-main>
+  </el-container>
 </template>
 
 <style scoped>
-.home-header {
+.home-page {
+  min-height: 100vh;
+  background-color: #f0f2f5;
+}
+
+.app-header {
+  padding: 0;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: auto;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  height: 32px;
+  width: 32px;
+}
+
+.app-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #2c3e50;
   margin: 0;
+}
+
+.github-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #606266;
+  text-decoration: none;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.github-link:hover {
+  color: #409eff;
+}
+
+.app-main {
   padding: 0;
 }
-.card {
-  margin-bottom: 10px;
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.category-card {
+  margin-bottom: 24px;
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.category-card :deep(.el-card__body) {
+  padding: 24px 8px;
+  background-color: transparent;
+}
+
+.category-tabs {
+  margin: 0;
+}
+
+.category-tabs :deep(.el-tabs__header) {
+  margin-bottom: 24px;
+  padding: 0 16px;
+}
+
+.category-tabs :deep(.el-tabs__nav-wrap::after) {
+  height: 1px;
+}
+
+.category-tabs :deep(.el-tabs__item) {
+  font-size: 16px;
+  height: 48px;
+  line-height: 48px;
+  padding: 0 24px;
+  transition: all 0.3s ease;
+}
+
+.category-tabs :deep(.el-tabs__item.is-active) {
+  font-weight: 600;
+}
+
+.tools-grid {
+  padding: 0;
+  width: 100%;
+}
+
+.tools-grid :deep(.el-row) {
+  width: 100%;
+  margin: 0 !important;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tool-col {
+  margin-bottom: 32px;
+  padding: 0 16px;
+  box-sizing: border-box;
+  display: flex;
+}
+
+.tool-col > :deep(*) {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .header-content {
+    padding: 12px 16px;
+  }
+
+  .app-title {
+    font-size: 20px;
+  }
+
+  .logo {
+    height: 28px;
+    width: 28px;
+  }
+
+  .container {
+    padding: 16px;
+  }
+
+  .category-card :deep(.el-card__body) {
+    padding: 16px;
+  }
+
+  .category-tabs :deep(.el-tabs__item) {
+    font-size: 14px;
+    height: 40px;
+    line-height: 40px;
+    padding: 0 16px;
+  }
+
+  .category-card :deep(.el-card__body) {
+    padding: 16px 4px;
+  }
+
+  .tool-col {
+    margin-bottom: 24px;
+    padding: 0 12px;
+  }
+
+  .category-tabs :deep(.el-tabs__header) {
+    padding: 0 12px;
+  }
 }
 </style>

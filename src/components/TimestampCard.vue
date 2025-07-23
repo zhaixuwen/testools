@@ -3,18 +3,15 @@ import { ref, onMounted } from 'vue'
 
 /**
  * 将 Date 对象格式化为 UTC 字符串 'YYYY-MM-DD HH:mm:ss'
- * @param {Date} date 要格式化的 Date 对象
- * @returns {string} 格式化后的 UTC 日期时间字符串
  */
 const formatDate = (date) => {
   const year = date.getUTCFullYear()
   let month = date.getUTCMonth() + 1
-  let day = date.getUTCDate() // 修正：使用 getUTCDate() 获取日期中的天数
+  let day = date.getUTCDate()
   let hour = date.getUTCHours()
   let minute = date.getUTCMinutes()
   let second = date.getUTCSeconds()
 
-  // 确保所有部分都为两位数，不足的补零
   month = month < 10 ? '0' + month : month
   day = day < 10 ? '0' + day : day
   hour = hour < 10 ? '0' + hour : hour
@@ -24,13 +21,11 @@ const formatDate = (date) => {
   return `${year}-${month}-${day} ${hour}:${minute}:${second}`
 }
 
-// --- 日期时间转时间戳功能相关变量 ---
-const datetimeInputForToTimestamp = ref('') // 用于输入的日期时间字符串
-const timestampOutputForToToTimestamp = ref('') // 转换后的时间戳输出
+const datetimeInputForToTimestamp = ref('')
+const timestampOutputForToToTimestamp = ref('')
+const timestampInputForToDatetime = ref('')
+const datetimeOutputForToDatetime = ref('')
 
-/**
- * 将日期时间字符串转换为时间戳 (UTC)
- */
 const convertDatetimeToTimestamp = () => {
   const dateTimeString = datetimeInputForToTimestamp.value
   if (!dateTimeString) {
@@ -40,19 +35,9 @@ const convertDatetimeToTimestamp = () => {
   const [datePart, timePart] = dateTimeString.split(' ')
   const [year, month, day] = datePart.split('-').map(Number)
   const [hour, minute, second] = timePart.split(':').map(Number)
-
-  // Date.UTC() 接收的是 UTC 时间的各个组成部分，并返回 UTC 时间戳
-  // 月份在 JavaScript Date 对象中是 0-11，所以需要 month - 1
   timestampOutputForToToTimestamp.value = Date.UTC(year, month - 1, day, hour, minute, second)
 }
 
-// --- 时间戳转日期时间功能相关变量 ---
-const timestampInputForToDatetime = ref('') // 用于输入的时间戳
-const datetimeOutputForToDatetime = ref('') // 转换后的日期时间字符串输出
-
-/**
- * 将时间戳转换为日期时间字符串 (UTC)
- */
 const convertTimestampToDatetime = () => {
   const timestamp = Number(timestampInputForToDatetime.value)
   if (isNaN(timestamp)) {
@@ -63,118 +48,209 @@ const convertTimestampToDatetime = () => {
   datetimeOutputForToDatetime.value = formatDate(newDate)
 }
 
-/**
- * 重置所有输入框和输出框为当前 UTC 时间
- */
 const resetAll = () => {
   const now = new Date()
-  // 日期时间转时间戳部分
   datetimeInputForToTimestamp.value = formatDate(now)
   timestampOutputForToToTimestamp.value = now.valueOf()
-
-  // 时间戳转日期时间部分
   timestampInputForToDatetime.value = now.valueOf()
   datetimeOutputForToDatetime.value = formatDate(now)
 }
 
-// 组件挂载时，初始化所有输入和输出为当前 UTC 时间
 onMounted(() => {
   resetAll()
 })
 </script>
 
 <template>
-  <div>
-    <el-card shadow="hover">
-      <template #header>
-        <div class="time-header">
-          <span>Timestamp Conversion</span>
+  <div class="tool-card">
+    <div class="tool-header">
+      <h3>时间戳转换工具</h3>
+      <div class="tool-description">在 UTC 时间和时间戳之间进行转换</div>
+    </div>
+    
+    <div class="tool-content">
+      <div class="conversion-section">
+        <h4 class="section-title">UTC 时间转时间戳</h4>
+        <div class="input-group">
+          <div class="input-label">UTC 时间</div>
+          <el-input
+            v-model="datetimeInputForToTimestamp"
+            placeholder="YYYY-MM-DD HH:mm:ss"
+            class="custom-input"
+            @input="convertDatetimeToTimestamp"
+          />
         </div>
-      </template>
-      <el-form :label-position="'right'" label-width="auto">
-        <!-- 日期时间转时间戳 -->
-        <el-form-item label="Datetime (UTC)">
-          <el-input v-model="datetimeInputForToTimestamp" placeholder="YYYY-MM-DD HH:mm:ss" />
-        </el-form-item>
-        <el-form-item label="Timestamp (ms)">
-          <el-input v-model="timestampOutputForToToTimestamp" readonly type="number">
+        <div class="input-group">
+          <div class="input-label">时间戳 (毫秒)</div>
+          <el-input
+            v-model="timestampOutputForToToTimestamp"
+            readonly
+            type="number"
+            class="custom-input"
+          >
             <template #append>ms</template>
           </el-input>
-        </el-form-item>
-        <!-- 按钮独自占一行并靠右对齐 -->
-        <el-form-item class="button-full-width-right">
-          <el-tooltip
-            class="box-item"
-            effect="dark"
-            content="Convert Datetime to Timestamp"
-            placement="left"
+        </div>
+      </div>
+
+      <div class="conversion-section">
+        <h4 class="section-title">时间戳转 UTC 时间</h4>
+        <div class="input-group">
+          <div class="input-label">时间戳 (毫秒)</div>
+          <el-input
+            v-model="timestampInputForToDatetime"
+            type="number"
+            class="custom-input"
+            @input="convertTimestampToDatetime"
           >
-            <el-button color="#FDC93A" @click="convertDatetimeToTimestamp()">Convert Datetime</el-button>
-          </el-tooltip>
-        </el-form-item>
-
-        <el-divider /> <!-- 分隔两个功能 -->
-
-        <!-- 时间戳转日期时间 -->
-        <el-form-item label="Timestamp (ms)">
-          <el-input v-model="timestampInputForToDatetime" type="number" />
-        </el-form-item>
-        <el-form-item label="Datetime (UTC)">
-          <el-input v-model="datetimeOutputForToDatetime" readonly placeholder="YYYY-MM-DD HH:mm:ss">
+            <template #append>ms</template>
+          </el-input>
+        </div>
+        <div class="input-group">
+          <div class="input-label">UTC 时间</div>
+          <el-input
+            v-model="datetimeOutputForToDatetime"
+            readonly
+            class="custom-input"
+          >
             <template #append>utc</template>
           </el-input>
-        </el-form-item>
-        <!-- 按钮独自占一行并靠右对齐 -->
-        <el-form-item class="button-full-width-right">
-          <el-tooltip
-            class="box-item"
-            effect="dark"
-            content="Convert Timestamp to Datetime"
-            placement="left"
-          >
-            <el-button color="#FDC93A" @click="convertTimestampToDatetime()">Convert Timestamp</el-button>
-          </el-tooltip>
-        </el-form-item>
+        </div>
+      </div>
 
-        <el-divider /> <!-- 分隔功能和重置按钮 -->
-
-        <!-- 重置按钮，独自占一行并靠右对齐 -->
-        <el-form-item class="button-full-width-right">
-          <el-button color="#FDC93A" plain @click="resetAll()">Reset All</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
+      <div class="button-group">
+        <el-button 
+          type="primary"
+          @click="resetAll"
+          class="action-button"
+        >
+          重置为当前时间
+        </el-button>
+      </div>
+    </div>
   </div>
 </template>
 
 <style scoped>
-/* 保持原有的样式 */
-.time-header {
+.tool-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  height: auto;
+  min-height: 200px;
+}
+
+.tool-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.tool-header {
+  margin-bottom: 20px;
+}
+
+.tool-header h3 {
+  font-size: 18px;
+  margin: 0 0 8px 0;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.tool-description {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.tool-content {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.el-divider {
-  margin: 20px 0;
+  flex-direction: column;
+  gap: 24px;
 }
 
-/* 调整 el-form-item 自身的默认间距，使其更紧凑 */
-.el-form-item {
-  margin-bottom: 10px; /* 减小默认的底部间距 */
+.conversion-section {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 16px;
 }
 
-/* 修正后的样式：确保按钮独自占一行并靠右对齐 */
-.button-full-width-right {
-  width: 100%; /* 确保 el-form-item 占据整个宽度 */
-  margin-top: 0px; /* 增加与上方输入框的间隔 */
-  margin-bottom: 0px; /* 增加与下方内容的间隔 */
+.section-title {
+  font-size: 15px;
+  color: #2c3e50;
+  margin: 0 0 16px 0;
+  font-weight: 500;
 }
 
-/* 关键修正：针对 el-form-item 内部的 content 区域应用 Flexbox */
-.button-full-width-right :deep(.el-form-item__content) {
-  display: flex; /* 使用 Flexbox 布局 */
-  justify-content: flex-end; /* 将内容（按钮）推到右侧 */
-  width: 100%; /* 确保内容区域也占据整个宽度 */
-  margin-left: 0 !important; /* 覆盖 Element Plus 默认的左边距，确保完全右对齐 */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.input-group:last-child {
+  margin-bottom: 0;
+}
+
+.input-label {
+  font-size: 14px;
+  color: #606266;
+  font-weight: 500;
+}
+
+.custom-input :deep(.el-input__wrapper) {
+  border-radius: 8px;
+  box-shadow: 0 0 0 1px #e4e7ed;
+  transition: all 0.3s ease;
+}
+
+.custom-input :deep(.el-input__inner) {
+  font-size: 14px;
+  height: 40px;
+}
+
+.custom-input :deep(.el-input__wrapper.is-focus) {
+  box-shadow: 0 0 0 1px #409eff;
+}
+
+.custom-input :deep(.el-input-group__append) {
+  background-color: #f4f4f5;
+  color: #909399;
+  font-size: 12px;
+  padding: 0 12px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.action-button {
+  border-radius: 8px;
+  height: 40px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  min-width: 120px;
+}
+
+.action-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(64, 158, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+  .conversion-section {
+    padding: 12px;
+  }
+
+  .input-group {
+    margin-bottom: 12px;
+  }
+
+  .custom-input :deep(.el-input__wrapper) {
+    width: 100%;
+  }
 }
 </style>
