@@ -1,53 +1,72 @@
 <script setup>
-import UUIDCard from '@/components/UUIDCard.vue'
-import TimestampCard from '@/components/TimestampCard.vue'
-import UserInfoCard from '@/components/UserInfoCard.vue'
-import JsonFormatCard from '@/components/JsonFormatCard.vue'
-import JsonCompareCard from '@/components/JsonCompareCard.vue'
-import APIMockCard from '@/components/APIMockCard.vue'
-import BlankClearCard from '@/components/BlankClearCard.vue'
+import { ref } from 'vue'
+import { ElCard, ElInput, ElButton, ElSpace } from 'element-plus'
+import { ElMessage } from 'element-plus'
 
+const inputText = ref('')
+
+const clearBlanksAndCopy = async () => {
+  const clearedText = inputText.value.replace(/\s+/g, '')
+  try {
+    await navigator.clipboard.writeText(clearedText)
+    inputText.value = clearedText
+    ElMessage.success('已清除空格并复制到剪贴板')
+  } catch (err) {
+    ElMessage.error('复制到剪贴板失败')
+  }
+}
+
+const resetField = () => {
+  inputText.value = ''
+}
 </script>
 
 <template>
-  <div class="home-page">
-    <el-container>
-      <el-header class="home-header">
-        <el-menu mode="horizontal">
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <el-space>
-            <img src="../assets/logo.svg" alt="Toolkit Logo" height="24px" width="24px" />
-            <h1>Testools</h1>
-          </el-space>
-        </el-menu>
-      </el-header>
-      <el-main class="home-main">
-        <el-row :gutter="20">
-          <el-col :span="7">
-            <div class="card"><UUIDCard /></div>
-            <div class="card"><UserInfoCard /></div>
-            <div class="card"><BlankClearCard /></div>
-          </el-col>
-          <el-col :span="7">
-            <div class="card"><TimestampCard /></div>
-            <div class="card"><JsonCompareCard /></div>
-            <div class="card"><APIMockCard /></div>
-          </el-col>
-          <el-col :span="10">
-            <div class="card"><JsonFormatCard /></div>
-          </el-col>
-        </el-row>
-      </el-main>
-    </el-container>
-  </div>
+  <el-card class="blank-clear-card">
+    <template #header>
+      <div class="card-header">
+        <span>空格清除工具</span>
+      </div>
+    </template>
+    
+    <div class="card-body">
+      <el-input
+        v-model="inputText"
+        type="textarea"
+        :rows="4"
+        placeholder="请输入需要清除空格的文本"
+      />
+      
+      <div class="button-group">
+        <el-space>
+          <el-button type="primary" @click="clearBlanksAndCopy">清除空格并复制</el-button>
+          <el-button @click="resetField">重置</el-button>
+        </el-space>
+      </div>
+    </div>
+  </el-card>
 </template>
 
 <style scoped>
-.home-header {
-  margin: 0;
-  padding: 0;
+.blank-clear-card {
+  width: 100%;
 }
-.card {
-  margin-bottom: 10px;
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  margin: 8px 0;
 }
 </style>
