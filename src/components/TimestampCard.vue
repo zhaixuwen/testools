@@ -127,7 +127,7 @@ onMounted(() => {
           @click="resetAll"
           class="action-button"
         >
-          重置为当前时间
+          {{ t('cards.timestamp.resetAll') }}
         </el-button>
       </div>
     </div>
