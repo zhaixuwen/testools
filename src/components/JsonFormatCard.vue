@@ -1,8 +1,10 @@
 <script setup>
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
 import * as monaco from 'monaco-editor'
 
+const { t } = useI18n()
 const jsonData = ref('')
 const editorContainer = ref(null)
 let editor = null
@@ -69,13 +71,13 @@ const formatJson = async () => {
     
     ElMessage({
       type: 'success',
-      message: '格式化成功'
+      message: t('cards.jsonFormat.formatSuccess')
     })
   } catch (error) {
-    console.error('格式化错误:', error)
+    console.error('Format error:', error)
     ElMessage({
       type: 'error',
-      message: error.message || '无效的 JSON 格式'
+      message: error.message || t('cards.jsonFormat.invalidJson')
     })
   }
 }
@@ -91,12 +93,12 @@ const compressJson = () => {
     
     ElMessage({
       type: 'success',
-      message: '压缩成功'
+      message: t('cards.jsonFormat.compressSuccess')
     })
   } catch (error) {
     ElMessage({
       type: 'error',
-      message: '无效的 JSON 格式'
+      message: t('cards.jsonFormat.invalidJson')
     })
   }
 }
@@ -108,7 +110,7 @@ const copyJsonData = () => {
   navigator.clipboard.writeText(value).then(() => {
     ElMessage({
       type: 'success',
-      message: '已复制到剪贴板'
+      message: t('common.copySuccess')
     })
   })
 }
@@ -122,8 +124,8 @@ const clearJsonData = () => {
 <template>
   <div class="tool-card">
     <div class="tool-header">
-      <h3>JSON 格式化工具</h3>
-      <div class="tool-description">格式化、压缩和编辑 JSON 数据</div>
+      <h3>{{ t('cards.jsonFormat.title') }}</h3>
+      <div class="tool-description">{{ t('cards.jsonFormat.description') }}</div>
     </div>
     
     <div class="tool-content">
@@ -137,27 +139,27 @@ const clearJsonData = () => {
           @click="formatJson"
           class="action-button"
         >
-          格式化
+          {{ t('cards.jsonFormat.format') }}
         </el-button>
         <el-button 
           @click="compressJson"
           class="action-button"
         >
-          压缩
+          {{ t('cards.jsonFormat.compress') }}
         </el-button>
         <el-button 
           @click="copyJsonData"
           class="action-button"
           :disabled="!jsonData"
         >
-          复制
+          {{ t('cards.jsonFormat.copy') }}
         </el-button>
         <el-button 
           @click="clearJsonData"
           class="action-button"
           :disabled="!jsonData"
         >
-          清空
+          {{ t('cards.jsonFormat.clear') }}
         </el-button>
       </div>
     </div>

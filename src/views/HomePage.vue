@@ -1,5 +1,6 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import UUIDCard from '@/components/UUIDCard.vue'
 import TimestampCard from '@/components/TimestampCard.vue'
 import UserInfoCard from '@/components/UserInfoCard.vue'
@@ -8,52 +9,63 @@ import JsonCompareCard from '@/components/JsonCompareCard.vue'
 import APIMockCard from '@/components/APIMockCard.vue'
 import BlankClearCard from '@/components/BlankClearCard.vue'
 
+const { t, locale } = useI18n()
 const activeCategory = ref('daily')
 
-const categories = [
+const toggleLanguage = () => {
+  const newLocale = locale.value === 'zh' ? 'en' : 'zh'
+  locale.value = newLocale
+  try {
+    localStorage.setItem('language', newLocale)
+  } catch (e) {
+    console.warn('Failed to save language preference:', e)
+  }
+}
+
+const categories = computed(() => [
   {
     id: 'daily',
-    name: '日常工具',
+    name: t('categories.daily.name'),
     icon: 'Tools',
     tools: [
-      { component: UUIDCard, name: 'UUID 生成器' },
-      { component: TimestampCard, name: '时间戳转换' }
+      { component: UUIDCard, name: t('categories.daily.tools.uuid') },
+      { component: TimestampCard, name: t('categories.daily.tools.timestamp') }
     ]
   },
   {
     id: 'text',
-    name: '字符处理',
+    name: t('categories.text.name'),
     icon: 'Document',
     tools: [
-      { component: BlankClearCard, name: '空白字符清理' }
+      { component: BlankClearCard, name: t('categories.text.tools.blankClear') }
     ]
   },
   {
     id: 'debug',
-    name: '开发调试',
+    name: t('categories.debug.name'),
     icon: 'Monitor',
     tools: [
-      { component: APIMockCard, name: 'API 调试工具' }
+      { component: APIMockCard, name: t('categories.debug.tools.apiMock') }
     ]
   },
   {
     id: 'mock',
-    name: '模拟数据',
+    name: t('categories.mock.name'),
     icon: 'DataLine',
     tools: [
-      { component: UserInfoCard, name: '用户信息生成' }
+      { component: UserInfoCard, name: t('categories.mock.tools.userInfo') }
     ]
   },
   {
     id: 'json',
-    name: 'JSON 工具',
+    name: t('categories.json.name'),
     icon: 'Document',
     tools: [
-      { component: JsonFormatCard, name: 'JSON 格式化' },
-      { component: JsonCompareCard, name: 'JSON 对比工具' }
+      { component: JsonFormatCard, name: t('categories.json.tools.jsonFormat') },
+      { component: JsonCompareCard, name: t('categories.json.tools.jsonCompare') }
     ]
   }
-]
+])
 </script>
 
 <template>
@@ -62,12 +74,21 @@ const categories = [
       <div class="header-content">
         <div class="logo-section">
           <img src="../assets/logo.svg" alt="Toolkit Logo" class="logo" />
-          <h1 class="app-title">Testools</h1>
+          <h1 class="app-title">{{ t('header.title') }}</h1>
         </div>
         <div class="header-right">
-          <a href="https://github.com/zhaixuwen/testools" target="_blank" class="github-link">
-            <i class="el-icon-position"></i> Github
-          </a>
+          <div class="header-actions">
+            <el-button
+              type="text"
+              class="language-switch"
+              @click="toggleLanguage"
+            >
+              {{ t(`language.${locale === 'zh' ? 'en' : 'zh'}`) }}
+            </el-button>
+            <a href="https://github.com/zhaixuwen/testools" target="_blank" class="github-link">
+              <i class="el-icon-position"></i> {{ t('header.github') }}
+            </a>
+          </div>
         </div>
       </div>
     </el-header>
@@ -128,6 +149,23 @@ const categories = [
   padding: 16px 24px;
   max-width: 1200px;
   margin: 0 auto;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.language-switch {
+  font-size: 14px;
+  color: #606266;
+  padding: 0;
+  height: auto;
+}
+
+.language-switch:hover {
+  color: #409eff;
 }
 
 .logo-section {

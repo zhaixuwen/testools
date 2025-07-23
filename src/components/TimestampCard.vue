@@ -1,5 +1,8 @@
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 /**
  * 将 Date 对象格式化为 UTC 字符串 'YYYY-MM-DD HH:mm:ss'
@@ -64,24 +67,24 @@ onMounted(() => {
 <template>
   <div class="tool-card">
     <div class="tool-header">
-      <h3>时间戳转换工具</h3>
-      <div class="tool-description">在 UTC 时间和时间戳之间进行转换</div>
+      <h3>{{ t('cards.timestamp.title') }}</h3>
+      <div class="tool-description">{{ t('cards.timestamp.description') }}</div>
     </div>
     
     <div class="tool-content">
       <div class="conversion-section">
-        <h4 class="section-title">UTC 时间转时间戳</h4>
+        <h4 class="section-title">{{ t('cards.timestamp.utcToTimestamp') }}</h4>
         <div class="input-group">
-          <div class="input-label">UTC 时间</div>
+          <div class="input-label">{{ t('cards.timestamp.utcTime') }}</div>
           <el-input
             v-model="datetimeInputForToTimestamp"
-            placeholder="YYYY-MM-DD HH:mm:ss"
+            :placeholder="t('cards.timestamp.dateFormat')"
             class="custom-input"
             @input="convertDatetimeToTimestamp"
           />
         </div>
         <div class="input-group">
-          <div class="input-label">时间戳 (毫秒)</div>
+          <div class="input-label">{{ t('cards.timestamp.timestampMs') }}</div>
           <el-input
             v-model="timestampOutputForToToTimestamp"
             readonly
@@ -94,9 +97,9 @@ onMounted(() => {
       </div>
 
       <div class="conversion-section">
-        <h4 class="section-title">时间戳转 UTC 时间</h4>
+        <h4 class="section-title">{{ t('cards.timestamp.timestampToUtc') }}</h4>
         <div class="input-group">
-          <div class="input-label">时间戳 (毫秒)</div>
+          <div class="input-label">{{ t('cards.timestamp.timestampMs') }}</div>
           <el-input
             v-model="timestampInputForToDatetime"
             type="number"
@@ -107,7 +110,7 @@ onMounted(() => {
           </el-input>
         </div>
         <div class="input-group">
-          <div class="input-label">UTC 时间</div>
+          <div class="input-label">{{ t('cards.timestamp.utcTime') }}</div>
           <el-input
             v-model="datetimeOutputForToDatetime"
             readonly

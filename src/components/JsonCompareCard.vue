@@ -1,6 +1,9 @@
 <script setup>
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { CodeDiff } from 'v-code-diff'
+
+const { t } = useI18n()
 
 const dialogVisible = ref(false)
 const codeDiffVisible = ref(false)
@@ -32,8 +35,8 @@ const handleCompare = () => {
 <template>
   <div class="tool-card">
     <div class="tool-header">
-      <h3>JSON 对比工具</h3>
-      <div class="tool-description">比较两段 JSON 内容的差异</div>
+      <h3>{{ t('cards.jsonCompare.title') }}</h3>
+      <div class="tool-description">{{ t('cards.jsonCompare.description') }}</div>
     </div>
     
     <div class="tool-content">
@@ -42,13 +45,13 @@ const handleCompare = () => {
         @click="dialogVisible = true"
         class="action-button"
       >
-        开始对比
+        {{ t('cards.jsonCompare.startCompare') }}
       </el-button>
     </div>
 
     <el-dialog
       v-model="dialogVisible"
-      title="JSON 对比"
+      :title="t('cards.jsonCompare.dialogTitle')"
       width="80%"
       :before-close="handleClose"
       class="compare-dialog"
@@ -58,30 +61,30 @@ const handleCompare = () => {
       <div class="compare-container">
         <div class="input-section">
           <div class="json-input">
-            <div class="input-label">原始 JSON</div>
+            <div class="input-label">{{ t('cards.jsonCompare.original') }}</div>
             <el-input
               v-model="leftJson"
               type="textarea"
               :rows="12"
-              placeholder="请输入原始 JSON"
+              :placeholder="t('cards.jsonCompare.originalPlaceholder')"
               class="custom-input"
             />
           </div>
           
           <div class="json-input">
-            <div class="input-label">对比 JSON</div>
+            <div class="input-label">{{ t('cards.jsonCompare.target') }}</div>
             <el-input
               v-model="rightJson"
               type="textarea"
               :rows="12"
-              placeholder="请输入要对比的 JSON"
+              :placeholder="t('cards.jsonCompare.targetPlaceholder')"
               class="custom-input"
             />
           </div>
         </div>
 
         <div v-if="codeDiffVisible" class="diff-section">
-          <div class="diff-header">对比结果</div>
+          <div class="diff-header">{{ t('cards.jsonCompare.differences') }}</div>
           <div class="diff-content">
             <code-diff
               :old-string="formatJson(leftJson)"
@@ -98,14 +101,14 @@ const handleCompare = () => {
             @click="handleClose"
             class="cancel-button"
           >
-            关闭
+            {{ t('common.close') }}
           </el-button>
           <el-button 
             type="primary"
             @click="handleCompare"
             class="action-button"
           >
-            对比
+            {{ t('cards.jsonCompare.compare') }}
           </el-button>
         </div>
       </template>

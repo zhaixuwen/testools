@@ -1,8 +1,10 @@
 <script setup>
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { ElCard, ElInput, ElButton, ElSpace } from 'element-plus'
 import { ElMessage } from 'element-plus'
 
+const { t } = useI18n()
 const inputText = ref('')
 
 const clearBlanksAndCopy = async () => {
@@ -10,9 +12,9 @@ const clearBlanksAndCopy = async () => {
   try {
     await navigator.clipboard.writeText(clearedText)
     inputText.value = clearedText
-    ElMessage.success('已清除空格并复制到剪贴板')
+    ElMessage.success(t('cards.blankClear.copySuccess'))
   } catch (err) {
-    ElMessage.error('复制到剪贴板失败')
+    ElMessage.error(t('cards.blankClear.copyError'))
   }
 }
 
@@ -24,8 +26,8 @@ const resetField = () => {
 <template>
   <div class="tool-card">
     <div class="tool-header">
-      <h3>空格清除工具</h3>
-      <div class="tool-description">一键清除文本中的所有空格</div>
+      <h3>{{ t('cards.blankClear.title') }}</h3>
+      <div class="tool-description">{{ t('cards.blankClear.description') }}</div>
     </div>
     
     <div class="tool-content">
@@ -33,7 +35,7 @@ const resetField = () => {
         v-model="inputText"
         type="textarea"
         :rows="4"
-        placeholder="请输入需要清除空格的文本"
+        :placeholder="t('cards.blankClear.placeholder')"
         class="custom-input"
       />
       
@@ -45,7 +47,7 @@ const resetField = () => {
           :class="{ 'disabled': !inputText }"
           :disabled="!inputText"
         >
-          清除空格并复制
+          {{ t('cards.blankClear.clean') }}
         </el-button>
         <el-button 
           @click="resetField"
@@ -53,7 +55,7 @@ const resetField = () => {
           :class="{ 'disabled': !inputText }"
           :disabled="!inputText"
         >
-          重置
+          {{ t('cards.blankClear.reset') }}
         </el-button>
       </div>
     </div>

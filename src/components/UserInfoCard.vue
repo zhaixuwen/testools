@@ -1,9 +1,12 @@
 <script setup>
 import { onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 // 假设这些外部包是正确的，我们只修改姓名的生成逻辑
 // import randomName from '@/packages/random-name.js' // 不再使用此包来生成姓名
 import getIdCard from '@/packages/random-idcard.js'
 import generateBankCardNumber from '@/packages/random-bankcard.js'
+
+const { t } = useI18n()
 
 const username = ref('')
 const birthday = ref('')
@@ -106,14 +109,14 @@ onMounted(() => {
 <template>
   <div class="tool-card">
     <div class="tool-header">
-      <h3>用户信息生成器</h3>
-      <div class="tool-description">生成随机的用户身份信息</div>
+      <h3>{{ t('cards.userInfo.title') }}</h3>
+      <div class="tool-description">{{ t('cards.userInfo.description') }}</div>
     </div>
     
     <div class="tool-content">
       <div class="info-section">
         <div class="input-group">
-          <div class="input-label">姓名（简体中文）</div>
+          <div class="input-label">{{ t('cards.userInfo.name') }}</div>
           <el-input
             v-model="username"
             class="custom-input"
@@ -122,7 +125,7 @@ onMounted(() => {
         </div>
         
         <div class="input-group">
-          <div class="input-label">出生日期</div>
+          <div class="input-label">{{ t('cards.userInfo.birthday') }}</div>
           <el-input
             v-model="birthday"
             class="custom-input"
@@ -131,7 +134,7 @@ onMounted(() => {
         </div>
         
         <div class="input-group">
-          <div class="input-label">手机号码</div>
+          <div class="input-label">{{ t('cards.userInfo.phone') }}</div>
           <el-input
             v-model="phoneNumber"
             class="custom-input"
@@ -140,7 +143,7 @@ onMounted(() => {
         </div>
         
         <div class="input-group">
-          <div class="input-label">身份证号</div>
+          <div class="input-label">{{ t('cards.userInfo.idCard') }}</div>
           <el-input
             v-model="idCardNumber"
             class="custom-input"
@@ -149,7 +152,7 @@ onMounted(() => {
         </div>
         
         <div class="input-group">
-          <div class="input-label">银行卡号</div>
+          <div class="input-label">{{ t('cards.userInfo.bankCard') }}</div>
           <el-input
             v-model="bankCardNumber"
             class="custom-input"
@@ -164,7 +167,7 @@ onMounted(() => {
           @click="refreshInfo"
           class="action-button"
         >
-          生成新信息
+          {{ t('cards.userInfo.generate') }}
         </el-button>
       </div>
     </div>

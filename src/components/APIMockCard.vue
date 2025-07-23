@@ -1,7 +1,10 @@
 <script setup>
 import { ref } from 'vue'
-import { Plus, Minus, Upload, Close, Promotion } from '@element-plus/icons-vue'
+import { Plus, Minus, Upload, Close } from '@element-plus/icons-vue'
+import { useI18n } from 'vue-i18n'
 import axios from 'axios'
+
+const { t } = useI18n()
 
 const axiosInstance = axios.create({
   timeout: 5000
@@ -177,8 +180,9 @@ const sendRequest = () => {
 <template>
   <div class="tool-card">
     <div class="tool-header">
-      <h3>API 调试工具</h3>
-      <div class="tool-description">模拟 API 请求，支持导入 cURL 命令</div>
+      <h3>{{ t('cards.apiMock.title') }}</h3>
+      <div class="tool-description">{{ t('cards.apiMock.description') }}</div>
+    </div>
     
     <div class="tool-content">
       <div class="tool-actions">
@@ -186,9 +190,8 @@ const sendRequest = () => {
           type="primary"
           @click="dialogVisible = true"
           class="action-button"
-          icon="Promotion"
         >
-          开始调试
+          {{ t('cards.apiMock.startDebug') }}
         </el-button>
       </div>
     </div>
@@ -197,7 +200,7 @@ const sendRequest = () => {
   <!-- Main Dialog -->
   <el-dialog
     v-model="dialogVisible"
-    title="API 调试"
+    :title="t('cards.apiMock.dialogTitle')"
     width="70%"
     :before-close="handleClose"
     class="mock-dialog"
@@ -211,7 +214,7 @@ const sendRequest = () => {
             class="import-button"
             :icon="Upload"
           >
-            导入 cURL
+            {{ t('cards.apiMock.importCurl') }}
           </el-button>
         </div>
         
@@ -220,7 +223,7 @@ const sendRequest = () => {
           :label-position="'left'"
           label-width="100px"
         >
-          <el-form-item label="请求方法">
+          <el-form-item :label="t('cards.apiMock.method')">
             <el-select v-model="method" style="width: 25%">
               <el-option label="GET" value="get" />
               <el-option label="POST" value="post" />
@@ -228,42 +231,42 @@ const sendRequest = () => {
               <el-option label="DELETE" value="delete" />
             </el-select>
           </el-form-item>
-          <el-form-item label="Path">
+          <el-form-item :label="t('cards.apiMock.path')">
             <el-input v-model="path"></el-input>
           </el-form-item>
-          <el-form-item label="Header">
+          <el-form-item :label="t('cards.apiMock.headers')">
             <div class="header-list">
               <div class="header-item" v-for="(h, index) in header" :key="index">
-                <el-input v-model="h.key" placeholder="Header Name" class="custom-input" />
-                <el-input v-model="h.value" placeholder="Header Value" class="custom-input" />
+                <el-input v-model="h.key" :placeholder="t('cards.apiMock.headerName')" class="custom-input" />
+                <el-input v-model="h.value" :placeholder="t('cards.apiMock.headerValue')" class="custom-input" />
                 <el-button type="danger" @click="delHeader(index)" :icon="Minus" circle></el-button>
                 <el-button v-if="index===(header.length-1)" @click="addHeader" :icon="Plus" circle></el-button>
               </div>
             </div>
           </el-form-item>
           
-          <el-form-item label="参数">
+          <el-form-item :label="t('cards.apiMock.params')">
             <div class="param-list">
               <div class="param-item" v-for="(p, index) in params" :key="index">
-                <el-input v-model="p.key" placeholder="参数名" class="custom-input" />
-                <el-input v-model="p.value" placeholder="参数值" class="custom-input" />
+                <el-input v-model="p.key" :placeholder="t('cards.apiMock.paramName')" class="custom-input" />
+                <el-input v-model="p.value" :placeholder="t('cards.apiMock.paramValue')" class="custom-input" />
                 <el-button type="danger" @click="delParam(index)" :icon="Minus" circle></el-button>
                 <el-button v-if="index===(params.length-1)" @click="addParam" :icon="Plus" circle></el-button>
               </div>
             </div>
           </el-form-item>
           
-          <el-form-item label="请求体">
+          <el-form-item :label="t('cards.apiMock.body')">
             <el-input 
               v-model="body" 
               type="textarea" 
               rows="5"
-              placeholder="请输入 JSON 格式的请求体"
+              :placeholder="t('cards.apiMock.bodyPlaceholder')"
               class="custom-input"
             />
           </el-form-item>
           
-          <el-form-item label="响应" v-if="response">
+          <el-form-item :label="t('cards.apiMock.response')" v-if="response">
             <div class="response-section">
               <el-input 
                 v-model="response" 
@@ -279,14 +282,14 @@ const sendRequest = () => {
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="dialogVisible = false" class="cancel-button">
-            关闭
+            {{ t('common.close') }}
           </el-button>
           <el-button 
             type="primary"
             @click="sendRequest"
             class="action-button"
           >
-            发送请求
+            {{ t('cards.apiMock.send') }}
           </el-button>
         </div>
       </template>
@@ -295,7 +298,7 @@ const sendRequest = () => {
     <!-- Curl Import Dialog -->
     <el-dialog
       v-model="curlDialogVisible"
-      title="导入 cURL 命令"
+      :title="t('cards.apiMock.curlDialogTitle')"
       width="600px"
       class="curl-dialog"
       append-to-body
@@ -305,17 +308,16 @@ const sendRequest = () => {
         v-model="curlCommand" 
         type="textarea" 
         rows="8" 
-        placeholder="在此粘贴 cURL 命令..."
+        :placeholder="t('cards.apiMock.curlPlaceholder')"
         class="curl-input"
       />
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="curlDialogVisible = false" :icon="Close">Cancel</el-button>
-          <el-button color="#FDC93A" @click="parseCurlCommand" :icon="Upload">Import</el-button>
+          <el-button @click="curlDialogVisible = false" :icon="Close">{{ t('common.cancel') }}</el-button>
+          <el-button color="#FDC93A" @click="parseCurlCommand" :icon="Upload">{{ t('cards.apiMock.import') }}</el-button>
         </div>
       </template>
     </el-dialog>
-  </div>
 </template>
 
 <style scoped>

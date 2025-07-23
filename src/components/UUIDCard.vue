@@ -1,8 +1,10 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 // 导入 Element Plus 的消息提示组件
 import { ElMessage } from 'element-plus'
 
+const { t } = useI18n()
 const smallUUID = ref('')
 const bigUUID = computed(() => smallUUID.value.toUpperCase())
 
@@ -26,13 +28,13 @@ const copyToClipboard = (text) => {
     if (successful) {
       // 复制成功后显示提示信息
       ElMessage({
-        message: 'UUID 已成功复制到剪贴板！',
+        message: t('common.copySuccess'),
         type: 'success',
       })
     } else {
       // 复制失败后显示警告信息
       ElMessage({
-        message: '复制失败，请手动复制。',
+        message: t('common.copyFailed'),
         type: 'warning',
       })
     }
@@ -64,27 +66,27 @@ onMounted(() => {
 <template>
   <div class="tool-card">
     <div class="tool-header">
-      <h3>UUID(v4) 生成器</h3>
-      <div class="tool-description">生成随机 UUID 并自动复制到剪贴板</div>
+      <h3>{{ t('cards.uuid.title') }}</h3>
+      <div class="tool-description">{{ t('cards.uuid.description') }}</div>
     </div>
     
     <div class="tool-content">
       <div class="uuid-inputs">
         <div class="input-group">
-          <div class="input-label">小写 UUID</div>
+          <div class="input-label">{{ t('cards.uuid.lowercase') }}</div>
           <el-input
             v-model="smallUUID"
-            placeholder="点击生成按钮创建 UUID"
+            :placeholder="t('cards.uuid.placeholder')"
             readonly
             class="custom-input"
           />
         </div>
         
         <div class="input-group">
-          <div class="input-label">大写 UUID</div>
+          <div class="input-label">{{ t('cards.uuid.uppercase') }}</div>
           <el-input
             v-model="bigUUID"
-            placeholder="点击生成按钮创建 UUID"
+            :placeholder="t('cards.uuid.placeholder')"
             readonly
             class="custom-input"
           />
@@ -97,7 +99,7 @@ onMounted(() => {
           @click="generateUUID"
           class="action-button"
         >
-          生成并复制
+          {{ t('cards.uuid.generate') }}
         </el-button>
       </div>
     </div>
