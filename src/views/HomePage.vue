@@ -15,10 +15,14 @@ const activeCategory = ref('daily')
 const toggleLanguage = () => {
   const newLocale = locale.value === 'zh' ? 'en' : 'zh'
   locale.value = newLocale
-  try {
-    localStorage.setItem('language', newLocale)
-  } catch (e) {
-    console.warn('Failed to save language preference:', e)
+  
+  // 检查是否为浏览器环境
+  if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+    try {
+      localStorage.setItem('language', newLocale)
+    } catch (e) {
+      console.warn('Failed to save language preference:', e)
+    }
   }
 }
 

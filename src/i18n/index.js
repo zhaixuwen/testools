@@ -7,14 +7,19 @@ const messages = {
   zh
 }
 
+// 检查是否为浏览器环境
+const isBrowser = typeof window !== 'undefined' && typeof localStorage !== 'undefined'
+
 let savedLocale = 'zh'
-try {
-  const stored = localStorage.getItem('language')
-  if (stored) {
-    savedLocale = stored
+if (isBrowser) {
+  try {
+    const stored = localStorage.getItem('language')
+    if (stored) {
+      savedLocale = stored
+    }
+  } catch (e) {
+    console.warn('Failed to access localStorage:', e)
   }
-} catch (e) {
-  console.warn('Failed to access localStorage:', e)
 }
 
 const i18n = createI18n({
