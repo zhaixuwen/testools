@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { Plus, Minus, Upload, Close, Promotion } from '@element-plus/icons-vue'
+import { Plus, Minus, Upload, Close, Promotion, ArrowRight } from '@element-plus/icons-vue'
 import axios from 'axios'
 
 const axiosInstance = axios.create({
@@ -186,7 +186,7 @@ const sendRequest = () => {
           type="primary"
           @click="dialogVisible = true"
           class="action-button"
-          icon="Promotion"
+          :icon="Promotion"
         >
           开始调试
         </el-button>
@@ -211,7 +211,7 @@ const sendRequest = () => {
             class="import-button"
             :icon="Upload"
           >
-            导入 cURL
+            导入cURL
           </el-button>
         </div>
         
@@ -278,13 +278,14 @@ const sendRequest = () => {
       </div>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="dialogVisible = false" class="cancel-button">
-            关闭
-          </el-button>
+          <el-button @click="dialogVisible = false" class="cancel-button" :icon="Close">
+          关闭
+        </el-button>
           <el-button 
             type="primary"
             @click="sendRequest"
             class="action-button"
+            :icon="ArrowRight"
           >
             发送请求
           </el-button>
@@ -310,8 +311,8 @@ const sendRequest = () => {
       />
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="curlDialogVisible = false" :icon="Close">Cancel</el-button>
-          <el-button color="#FDC93A" @click="parseCurlCommand" :icon="Upload">Import</el-button>
+          <el-button @click="curlDialogVisible = false" :icon="Close">关闭</el-button>
+          <el-button color="#FDC93A" @click="parseCurlCommand" :icon="Upload">导入</el-button>
         </div>
       </template>
     </el-dialog>
@@ -320,14 +321,14 @@ const sendRequest = () => {
 
 <style scoped>
 .tool-card {
-  background: linear-gradient(145deg, #ffffff, #f8fafc);
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   transition: all 0.3s ease;
   height: auto;
-  min-height: 200px;
-  border: 1px solid rgba(0, 0, 0, 0.03);
+  min-height: 280px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .tool-card:hover {
@@ -364,7 +365,7 @@ const sendRequest = () => {
 }
 
 .tool-actions {
-  text-align: center;
+  text-align: right;
 }
 
 .action-button {
@@ -443,21 +444,32 @@ const sendRequest = () => {
 
 .curl-dialog :deep(.el-dialog) {
   border-radius: 12px;
+  background-color: #fff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.curl-dialog :deep(.el-dialog__title) {
+  color: #2c3e50;
+  font-size: 18px;
+  font-weight: 600;
 }
 
 .curl-dialog :deep(.el-dialog__body) {
   padding: 24px;
+  background-color: #fff;
 }
 
 .curl-dialog :deep(.el-dialog__header) {
   margin: 0;
   padding: 20px;
   border-bottom: 1px solid #e4e7ed;
+  background-color: #fff;
 }
 
 .curl-dialog :deep(.el-dialog__footer) {
   border-top: 1px solid #e4e7ed;
   padding: 16px 24px;
+  background-color: #fff;
 }
 
 .curl-input {
@@ -467,7 +479,29 @@ const sendRequest = () => {
 .dialog-footer {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
+  gap: 20px;
+}
+
+.dialog-footer .el-button {
+  min-width: 120px;
+  height: 40px;
+  border-radius: 8px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.curl-dialog .dialog-footer .el-button:last-child {
+  background-color: #4096ff;
+  border-color: #4096ff;
+  color: #fff;
+}
+
+.curl-dialog .dialog-footer .el-button:last-child:hover {
+  background-color: #66b1ff;
+  border-color: #66b1ff;
 }
 
 @media (max-width: 768px) {
