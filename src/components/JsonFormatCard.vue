@@ -166,20 +166,20 @@ const clearJsonData = () => {
 
 <style scoped>
 .tool-card {
-  background: linear-gradient(145deg, #ffffff, #f8fafc);
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   transition: all 0.3s ease;
-  height: 100%;
-  min-height: 500px;
-  max-height: 800px;
+  height: auto;
+  min-height: 450px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
   display: flex;
   flex-direction: column;
   width: 100%;
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(0, 0, 0, 0.03);
+  box-sizing: border-box;
 }
 
 .tool-card:hover {
@@ -252,27 +252,29 @@ const clearJsonData = () => {
 .button-group {
   margin-top: 16px;
   display: flex;
-  gap: 12px;
+  gap: 10px;
   padding-bottom: 4px;
+  justify-content: flex-end;
+  padding: 0 10px;
+  margin-left: 10px;
 }
 
 .action-button {
-  border-radius: 6px;
-  height: 36px;
+  border-radius: 8px;
+  height: 40px;
   font-weight: 500;
   transition: all 0.3s ease;
-  padding: 0 16px;
-  min-width: 80px;
+  padding: 0 12px;
+  min-width: 90px;
   font-size: 14px;
 }
 
 .action-button:not(:disabled):hover {
   transform: translateY(-1px);
-}
-
-.action-button:first-child:hover {
   box-shadow: 0 4px 8px rgba(64, 158, 255, 0.2);
 }
+
+
 
 @media (max-width: 768px) {
   .button-group {

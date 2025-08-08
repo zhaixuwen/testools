@@ -115,12 +115,14 @@ const handleCompare = () => {
 
 <style scoped>
 .tool-card {
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   transition: all 0.3s ease;
-  height: 100%;
+  height: auto;
+  min-height: 280px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .tool-card:hover {
@@ -257,12 +259,29 @@ const handleCompare = () => {
 .dialog-footer {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
+  gap: 20px;
+  padding: 0 10px;
 }
 
 .cancel-button {
   border-radius: 8px;
   height: 40px;
+  color: #606266;
+  font-weight: 500;
+}
+
+.action-button {
+  border-radius: 8px;
+  height: 40px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  min-width: 120px;
+  color: #fff;
+}
+
+.action-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(64, 158, 255, 0.2);
 }
 
 @media (max-width: 768px) {
