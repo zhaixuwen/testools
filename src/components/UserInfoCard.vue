@@ -173,12 +173,14 @@ onMounted(() => {
 
 <style scoped>
 .tool-card {
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   transition: all 0.3s ease;
-  height: 100%;
+  height: auto;
+  min-height: 280px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .tool-card:hover {
@@ -212,7 +214,8 @@ onMounted(() => {
 .info-section {
   background: #f8f9fa;
   border-radius: 8px;
-  padding: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
 }
 
 .input-group {
@@ -234,8 +237,10 @@ onMounted(() => {
 
 .custom-input :deep(.el-input__wrapper) {
   border-radius: 8px;
-  box-shadow: 0 0 0 1px #e4e7ed;
+  border: 1px solid #e4e7ed;
+  box-shadow: none;
   transition: all 0.3s ease;
+  background-color: #ffffff;
 }
 
 .custom-input :deep(.el-input__inner) {
