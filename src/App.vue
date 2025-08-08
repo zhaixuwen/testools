@@ -12,6 +12,7 @@ import HomePage from '@/views/HomePage.vue'
 body {
   margin: 0;
   padding: 0;
-  background-color: #F4F4F4;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4eaf5 100%);
+  min-height: 100vh;
 }
 </style>

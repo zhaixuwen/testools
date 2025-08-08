@@ -108,7 +108,32 @@ const categories = [
 <style scoped>
 .home-page {
   min-height: 100vh;
-  background-color: #f0f2f5;
+}
+
+/* 全局工具按钮样式 */
+:deep(.tool-card .button-group) {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+}
+
+:deep(.tool-card .action-button) {
+  border-radius: 8px;
+  height: 40px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  min-width: 120px;
+  background-color: #409eff;
+  border-color: #409eff;
+}
+
+:deep(.tool-card .action-button:hover) {
+  background-color: #66b1ff;
+  border-color: #66b1ff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(64, 158, 255, 0.2);
 }
 
 .app-header {
@@ -175,10 +200,10 @@ const categories = [
 .category-card {
   margin-bottom: 24px;
   border-radius: 12px;
-  background-color: rgba(255, 255, 255, 0.65);
+  background-color: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .category-card :deep(.el-card__body) {
